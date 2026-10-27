@@ -112,29 +112,4 @@ export const api = {
   async getStats(): Promise<StatsResponse> {
     return request<StatsResponse>('/stats');
   },
-
-  // Video Ads (Gemini Pro)
-  async generateVideoAd(payload: {
-    productName?: string;
-    targetAudience?: string;
-    tone?: string;
-    duration?: '15s' | '30s' | '60s';
-    keyFeatures?: string[];
-  }): Promise<{ success: boolean; ad: import('../types/video-ad').VideoAdResponse }> {
-    return request<{ success: boolean; ad: import('../types/video-ad').VideoAdResponse }>('/video-ads/generate', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    });
-  },
-
-  async getVideoAdTemplates(): Promise<{
-    success: boolean;
-    templates: import('../types/video-ad').VideoAdTemplate[];
-  }> {
-    return request<{
-      success: boolean;
-      templates: import('../types/video-ad').VideoAdTemplate[];
-    }>('/video-ads/templates');
-  },
 };
-
