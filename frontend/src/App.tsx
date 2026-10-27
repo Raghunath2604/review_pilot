@@ -10,6 +10,7 @@ import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { NewReview } from './pages/NewReview';
 import { ReviewDetail } from './pages/ReviewDetail';
+import { VideoAdStudio } from './pages/VideoAdStudio';
 import { NotFound } from './pages/NotFound';
 import { Loader2 } from 'lucide-react';
 
@@ -53,7 +54,9 @@ export const App: React.FC = () => {
                 {/* Direct Landing & Dashboard shortcuts */}
                 <Route path="/landing" element={<Landing />} />
 
-                {/* Public Auth Routes */}
+                {/* Public Auth & Demo Studio Routes */}
+                <Route path="/video-ads" element={<VideoAdStudio />} />
+                <Route path="/ad-studio" element={<VideoAdStudio />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 

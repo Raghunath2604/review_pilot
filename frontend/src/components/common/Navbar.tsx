@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Code2, PlusCircle, LogOut, LayoutDashboard, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Code2, PlusCircle, LogOut, LayoutDashboard, Sparkles, ArrowRight, ShieldCheck, Film } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -39,13 +39,20 @@ export const Navbar: React.FC = () => {
           {/* Center Navigation Links for Unauthenticated Visitors */}
           {!user && (
             <div className="hidden md:flex items-center space-x-7 text-sm font-medium text-slate-600">
-              <a href="#features" className="hover:text-indigo-600 transition-colors">Features</a>
-              <a href="#interactive-demo" className="hover:text-indigo-600 transition-colors flex items-center gap-1">
+              <a href="/#features" className="hover:text-indigo-600 transition-colors">Features</a>
+              <a href="/#interactive-demo" className="hover:text-indigo-600 transition-colors flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
                 <span>Live Sandbox</span>
               </a>
-              <a href="#testimonials" className="hover:text-indigo-600 transition-colors">Testimonials</a>
-              <a href="#architecture" className="hover:text-indigo-600 transition-colors flex items-center gap-1">
+              <Link
+                to="/video-ads"
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100 text-indigo-700 text-xs font-bold border border-indigo-200 transition-all shadow-xs"
+              >
+                <Film className="w-3.5 h-3.5 text-indigo-600" />
+                <span>AI Video Ad Studio</span>
+              </Link>
+              <a href="/#testimonials" className="hover:text-indigo-600 transition-colors">Testimonials</a>
+              <a href="/#architecture" className="hover:text-indigo-600 transition-colors flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
                 <span>Security</span>
               </a>
@@ -55,6 +62,17 @@ export const Navbar: React.FC = () => {
           {/* Links & User Actions */}
           {user ? (
             <div className="flex items-center space-x-3 sm:space-x-4">
+              <Link
+                to="/video-ads"
+                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
+                  location.pathname === '/video-ads'
+                    ? 'bg-indigo-50 text-indigo-700 font-semibold'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                <Film className="w-4 h-4 text-purple-600" />
+                <span className="hidden sm:inline">Ad Studio</span>
+              </Link>
               <Link
                 to="/"
                 id="nav-dashboard-link"

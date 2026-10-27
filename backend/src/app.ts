@@ -8,6 +8,7 @@ import reviewRoutes from './routes/review.routes.js';
 import findingRoutes from './routes/finding.routes.js';
 import statsRoutes from './routes/stats.routes.js';
 import healthRoutes from './routes/health.routes.js';
+import videoAdRoutes from './routes/video-ad.routes.js';
 import { errorHandler } from './middlewares/error.middleware.js';
 import { requestLogger } from './middlewares/logger.middleware.js';
 
@@ -38,6 +39,7 @@ export const createApp = () => {
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/reviews', reviewRoutes);
   app.use('/api/v1/findings', findingRoutes);
+  app.use('/api/v1/video-ads', videoAdRoutes);
   app.use('/api/v1', statsRoutes);
 
   // Health Check Routes (Root & API v1)
