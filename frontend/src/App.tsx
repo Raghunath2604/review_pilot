@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/common/Navbar';
@@ -63,6 +63,10 @@ export const App: React.FC = () => {
                   <Route path="/new" element={<NewReview />} />
                   <Route path="/reviews/:id" element={<ReviewDetail />} />
                 </Route>
+
+                {/* Legacy/Deprecated Route Redirects */}
+                <Route path="/video-ads" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/ads" element={<Navigate to="/dashboard" replace />} />
 
                 {/* Catch-all 404 */}
                 <Route path="*" element={<NotFound />} />

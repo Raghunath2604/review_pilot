@@ -26,10 +26,11 @@
 
 | Service | Endpoint / Link | Status | Credentials / Notes |
 |---|---|:---:|---|
-| **Live Web App** | [https://cold-bugs-press.loca.lt](https://cold-bugs-press.loca.lt) | 🟢 **Live** | Tunnel Verification IP: `103.39.127.58` (Click to continue) |
-| **Demo Login** | Pre-loaded on `/login` | 🟢 **Active** | `demo-dev@reviewpilot.io` / `Password123!` |
-| **GitHub Actions CI/CD** | [Actions Run #8](https://github.com/Raghunath2604/ReviewPilot/actions) | 🟢 **Passing (4/4 jobs)** | Backend, Frontend, E2E Playwright, Production Deploy |
-| **Cloud Deployment** | [Render Blueprint](render.yaml) | 🟢 **Configured** | 1-click deploy to PostgreSQL + Node Web Service + Static Site |
+| **Live Web App (Vercel)** | [https://frontend-zeta-lac-46lt7f6msf.vercel.app](https://frontend-zeta-lac-46lt7f6msf.vercel.app) | 🟢 **Live** | Production frontend on Vercel Global Edge |
+| **Live API Engine (Cloudflare)** | [Live Health Check](https://ingredients-jury-hindu-separation.trycloudflare.com/api/v1/health) | 🟢 **Live** | REST API & PostgreSQL 16 via Cloudflare Edge tunnel |
+| **Demo Login** | Pre-loaded on `/login` | 🟢 **Active** | `demo-dev@reviewpilot.io` / `Password123!` (1-click autofill button included) |
+| **GitHub Actions CI/CD** | [Actions Workflow Runs](https://github.com/Raghunath2604/ReviewPilot/actions) | 🟢 **Passing (4/4 jobs)** | Backend Vitest, Frontend RTL, Playwright E2E, Deploy |
+| **Cloud Deployment** | [Render Blueprint](render.yaml) | 🟢 **Configured** | 1-click autonomous deploy for PostgreSQL + Express API + React |
 
 ---
 
@@ -122,7 +123,7 @@ sequenceDiagram
 | Decision | Option Chosen | Alternative Considered | Engineering Rationale |
 |---|---|---|---|
 | **Processing Architecture** | **Direct Service Call with Lifecycle State Machine** | Asynchronous Job Queue (BullMQ + Redis) | Eliminates external Redis dependency for local dev and single-server deployments while tracking state explicitly in PostgreSQL (`PENDING` -> `COMPLETED`/`FAILED`). The service interface enables dropping in a queue worker seamlessly if diff sizes scale. |
-| **Token Storage** | **`httpOnly` Session Cookie** | Authorization Bearer Header (`localStorage`) | Tokens stored in `localStorage` are vulnerable to JavaScript exfiltration via Cross-Site Scripting (XSS). `httpOnly` cookies ensure the browser manages transmission without client JavaScript access. |
+| **Token Storage** | **Dual Strategy: Authorization Bearer Header + `httpOnly` Cookie Fallback** | Cookie-only or LocalStorage-only | In distributed cross-origin deployments (e.g., Vercel Edge frontend communicating with an independent API host), browser third-party cookie restrictions frequently drop `httpOnly` cross-site cookies. By combining an explicit `Authorization: Bearer <token>` header with a fallback `httpOnly` cookie, ReviewPilot guarantees seamless session persistence across both same-origin reverse proxies and cross-origin architectures. |
 | **Code Retention & Privacy** | **Discard Raw Diff; Store Metadata & Findings** | Store Full Diffs Permanently in DB | Prevents database bloat and eliminates the liability of persisting proprietary customer source code in the database long-term. |
 
 ---
