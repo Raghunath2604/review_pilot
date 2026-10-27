@@ -39,6 +39,9 @@ export const createApp = () => {
   app.use('/api/v1/reviews', reviewRoutes);
   app.use('/api/v1/findings', findingRoutes);
   app.use('/api/v1', statsRoutes);
+
+  // Health Check Routes (Root & API v1)
+  app.use('/health', healthRoutes);
   app.use('/api/v1', healthRoutes);
 
   // 404 Not Found Handler

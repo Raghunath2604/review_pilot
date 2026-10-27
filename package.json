@@ -1,0 +1,30 @@
+{
+  "name": "reviewpilot-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ReviewPilot - AI-Powered Automated Pull Request Code Review Assistant",
+  "workspaces": [
+    "backend",
+    "frontend",
+    "e2e"
+  ],
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"blue,cyan\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:backend": "npm --prefix backend run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "test:backend": "npm --prefix backend run test",
+    "test:frontend": "npm --prefix frontend run test",
+    "test": "npm run test:backend && npm run test:frontend",
+    "db:up": "docker compose -f docker/docker-compose.yml up -d postgres",
+    "db:down": "docker compose -f docker/docker-compose.yml down",
+    "db:push": "npm --prefix backend run db:push",
+    "db:studio": "npm --prefix backend run db:studio",
+    "health": "npx tsx scripts/health-monitor.ts"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

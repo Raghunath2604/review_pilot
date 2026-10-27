@@ -5,7 +5,11 @@ import { env } from '../../config/env.js';
 
 let defaultLlmService: ILlmService;
 
-if (env.NODE_ENV === 'test' || env.ANTHROPIC_API_KEY === 'mock-key-for-tests') {
+const hasValidAnthropicKey =
+  env.ANTHROPIC_API_KEY &&
+  env.ANTHROPIC_API_KEY.startsWith('sk-ant-');
+
+if (env.NODE_ENV === 'test' || !hasValidAnthropicKey) {
   defaultLlmService = new MockLlmService();
 } else {
   defaultLlmService = new AnthropicLlmService();
