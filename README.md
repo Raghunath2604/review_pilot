@@ -22,6 +22,17 @@
 
 ---
 
+## 🌐 Live Demo & Deployment Status
+
+| Service | Endpoint / Link | Status | Credentials / Notes |
+|---|---|:---:|---|
+| **Live Web App** | [https://cold-bugs-press.loca.lt](https://cold-bugs-press.loca.lt) | 🟢 **Live** | Tunnel Verification IP: `103.39.127.58` (Click to continue) |
+| **Demo Login** | Pre-loaded on `/login` | 🟢 **Active** | `demo-dev@reviewpilot.io` / `Password123!` |
+| **GitHub Actions CI/CD** | [Actions Run #8](https://github.com/Raghunath2604/ReviewPilot/actions) | 🟢 **Passing (4/4 jobs)** | Backend, Frontend, E2E Playwright, Production Deploy |
+| **Cloud Deployment** | [Render Blueprint](render.yaml) | 🟢 **Configured** | 1-click deploy to PostgreSQL + Node Web Service + Static Site |
+
+---
+
 ## 📌 Executive Summary & Problem Statement
 
 Modern software teams spend up to **30% of engineering time** conducting manual code reviews. While Generative AI tools (LLMs) can review code changes, traditional LLM implementations suffer from three critical flaws:
