@@ -1,0 +1,59 @@
+services:
+  # 1. Backend Web Service
+  - type: web
+    name: reviewpilot-backend
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: backend
+    buildCommand: npm ci && npx prisma generate && npm run build
+    startCommand: npx prisma db push && node dist/server.js
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: reviewpilot-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CORS_ORIGIN
+        value: https://reviewpilot-frontend.onrender.com
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_MODEL
+        value: claude-3-5-sonnet-20241022
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 3600000
+      - key: RATE_LIMIT_MAX_REVIEWS
+        value: 10
+
+  # 2. Frontend Static Site
+  - type: web
+    name: reviewpilot-frontend
+    runtime: static
+    plan: free
+    region: oregon
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://reviewpilot-backend.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+databases:
+  # 3. Managed PostgreSQL Database
+  - name: reviewpilot-db
+    plan: free
+    region: oregon
+    databaseName: reviewpilot
+    user: postgres

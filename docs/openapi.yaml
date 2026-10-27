@@ -1,0 +1,395 @@
+openapi: 3.1.0
+info:
+  title: ReviewPilot API
+  description: Automated LLM-powered code review and precision feedback engine.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api/v1
+    description: Local development server
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+      responses:
+        '201':
+          description: User created and authenticated via httpOnly cookie
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: token=jwt_token_here; HttpOnly; Path=/; SameSite=Lax
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '409':
+          description: Email already registered
+
+  /auth/login:
+    post:
+      summary: Authenticate existing user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Authenticated successfully
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Invalid email or password
+
+  /auth/logout:
+    post:
+      summary: Terminate session
+      tags: [Auth]
+      responses:
+        '200':
+          description: Cookie cleared successfully
+
+  /auth/me:
+    get:
+      summary: Get current authenticated user
+      tags: [Auth]
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /reviews:
+    post:
+      summary: Submit a diff or GitHub PR for review
+      tags: [Reviews]
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [sourceType]
+              properties:
+                sourceType:
+                  type: string
+                  enum: [DIFF, GITHUB_PR]
+                diff:
+                  type: string
+                  description: Unified diff text (max 200 KB)
+                prUrl:
+                  type: string
+                  format: uri
+                  description: Public GitHub Pull Request URL
+      responses:
+        '201':
+          description: Review created and processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewDetail'
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          description: Rate limit exceeded (10 reviews per hour)
+
+    get:
+      summary: List user reviews
+      tags: [Reviews]
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviews:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReviewSummary'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  totalPages:
+                    type: integer
+
+  /reviews/{id}:
+    get:
+      summary: Get detailed review and findings
+      tags: [Reviews]
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewDetail'
+        '404':
+          description: Review not found
+
+  /findings/{id}/feedback:
+    patch:
+      summary: Update finding feedback (Accept or False Positive)
+      tags: [Findings]
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [feedback]
+              properties:
+                feedback:
+                  type: string
+                  enum: [ACCEPTED, FALSE_POSITIVE, PENDING]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Finding'
+        '404':
+          description: Finding not found
+
+  /stats:
+    get:
+      summary: Retrieve AI accuracy and category statistics
+      tags: [Stats]
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalReviews:
+                    type: integer
+                  totalFindings:
+                    type: integer
+                  acceptedCount:
+                    type: integer
+                  falsePositiveCount:
+                    type: integer
+                  pendingCount:
+                    type: integer
+                  precisionPercentage:
+                    type: number
+                    format: float
+                    example: 87.5
+                  byCategory:
+                    type: object
+                    additionalProperties:
+                      type: integer
+                  bySeverity:
+                    type: object
+                    additionalProperties:
+                      type: integer
+
+  /health:
+    get:
+      summary: Service health and DB status
+      tags: [Health]
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  db:
+                    type: string
+                    example: connected
+                  timestamp:
+                    type: string
+                    format: date-time
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+
+  schemas:
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        createdAt:
+          type: string
+          format: date-time
+
+    Finding:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        reviewId:
+          type: string
+          format: uuid
+        file:
+          type: string
+        line:
+          type: integer
+          nullable: true
+        severity:
+          type: string
+          enum: [LOW, MEDIUM, HIGH]
+        category:
+          type: string
+          enum: [BUG, SECURITY, PERFORMANCE, TESTING, STYLE]
+        message:
+          type: string
+        suggestion:
+          type: string
+        feedback:
+          type: string
+          enum: [PENDING, ACCEPTED, FALSE_POSITIVE]
+        createdAt:
+          type: string
+          format: date-time
+
+    ReviewSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sourceType:
+          type: string
+          enum: [DIFF, GITHUB_PR]
+        sourceRef:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [PENDING, COMPLETED, FAILED]
+        findingsCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    ReviewDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sourceType:
+          type: string
+          enum: [DIFF, GITHUB_PR]
+        sourceRef:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [PENDING, COMPLETED, FAILED]
+        failureReason:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        findings:
+          type: array
+          items:
+            $ref: '#/components/schemas/Finding'
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid authentication token
+    ValidationError:
+      description: Input validation failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
