@@ -3,11 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "ReviewPilot - AI-Powered Automated Pull Request Code Review Assistant",
-  "workspaces": [
-    "backend",
-    "frontend",
-    "e2e"
-  ],
+
   "scripts": {
     "dev:backend": "npm --prefix backend run dev",
     "dev:frontend": "npm --prefix frontend run dev",
