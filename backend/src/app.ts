@@ -23,7 +23,20 @@ export const createApp = () => {
   // CORS Configuration
   app.use(
     cors({
-      origin: env.CORS_ORIGIN,
+      origin: (requestOrigin, callback) => {
+        if (!requestOrigin) return callback(null, true);
+        if (
+          requestOrigin === env.CORS_ORIGIN ||
+          requestOrigin.endsWith('.vercel.app') ||
+          requestOrigin.includes('localhost') ||
+          requestOrigin.includes('127.0.0.1') ||
+          requestOrigin.endsWith('.lhr.life') ||
+          requestOrigin.endsWith('.loca.lt')
+        ) {
+          return callback(null, true);
+        }
+        return callback(null, true);
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],

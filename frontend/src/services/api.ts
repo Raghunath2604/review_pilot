@@ -22,11 +22,15 @@ class ApiError extends Error {
 }
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('reviewpilot_token') : null;
+  const authHeaders: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+
   const config: RequestInit = {
     ...options,
     credentials: 'include', // Ensures httpOnly JWT cookies are sent with requests
     headers: {
       'Content-Type': 'application/json',
+      ...authHeaders,
       ...options.headers,
     },
   };
@@ -54,20 +58,31 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 export const api = {
   // Auth
   async register(email: string, password: string): Promise<{ user: User }> {
-    return request<{ user: User }>('/auth/register', {
+    const res = await request<{ user: User; token?: string }>('/auth/register', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
+    if (res.token && typeof window !== 'undefined') {
+      localStorage.setItem('reviewpilot_token', res.token);
+    }
+    return { user: res.user };
   },
 
   async login(email: string, password: string): Promise<{ user: User }> {
-    return request<{ user: User }>('/auth/login', {
+    const res = await request<{ user: User; token?: string }>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
+    if (res.token && typeof window !== 'undefined') {
+      localStorage.setItem('reviewpilot_token', res.token);
+    }
+    return { user: res.user };
   },
 
   async logout(): Promise<{ message: string }> {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('reviewpilot_token');
+    }
     return request<{ message: string }>('/auth/logout', {
       method: 'POST',
     });

@@ -21,7 +21,7 @@ export class AuthController {
       const { email, password } = req.body;
       const { user, token } = await AuthService.register(email, password);
       setAuthCookie(res, token);
-      res.status(201).json({ user });
+      res.status(201).json({ user, token });
     } catch (error) {
       next(error);
     }
@@ -32,7 +32,7 @@ export class AuthController {
       const { email, password } = req.body;
       const { user, token } = await AuthService.login(email, password);
       setAuthCookie(res, token);
-      res.status(200).json({ user });
+      res.status(200).json({ user, token });
     } catch (error) {
       next(error);
     }
