@@ -12,7 +12,7 @@ const hasValidAnthropicKey =
 
 const hasValidGeminiKey =
   env.GEMINI_API_KEY &&
-  env.GEMINI_API_KEY.startsWith('AIza');
+  (env.GEMINI_API_KEY.startsWith('AIza') || env.GEMINI_API_KEY.startsWith('AQ.'));
 
 if (env.NODE_ENV === 'test') {
   defaultLlmService = new MockLlmService();

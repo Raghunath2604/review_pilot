@@ -13,7 +13,7 @@ const envSchema = z.object({
   ANTHROPIC_API_KEY: z.string().default(''),
   ANTHROPIC_MODEL: z.string().default('claude-3-5-sonnet-20241022'),
   GEMINI_API_KEY: z.string().default(''),
-  GEMINI_MODEL: z.string().default('gemini-1.5-flash'),
+  GEMINI_MODEL: z.string().default('gemini-3.1-flash-lite-preview'),
   RATE_LIMIT_WINDOW_MS: z.string().default('3600000').transform((val) => parseInt(val, 10)),
   RATE_LIMIT_MAX_REVIEWS: z.string().default('10').transform((val) => parseInt(val, 10)),
 });

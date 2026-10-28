@@ -37,7 +37,7 @@ export class ReviewService {
       let llmService = getLlmService();
       if (input.apiKey && input.apiKey.trim().length > 0) {
         const key = input.apiKey.trim();
-        if (key.startsWith('AIza')) {
+        if (key.startsWith('AIza') || key.startsWith('AQ.')) {
           llmService = new GeminiLlmService(key);
         } else {
           llmService = new AnthropicLlmService(key);

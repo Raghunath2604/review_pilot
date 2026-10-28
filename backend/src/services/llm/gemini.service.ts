@@ -24,7 +24,7 @@ export class GeminiLlmService implements ILlmService {
   private apiKey: string;
   private model: string;
 
-  constructor(apiKey: string, model = 'gemini-1.5-flash') {
+  constructor(apiKey: string, model = 'gemini-3.1-flash-lite-preview') {
     this.apiKey = apiKey;
     this.model = model;
   }
