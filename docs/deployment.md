@@ -23,43 +23,89 @@ Ensure these variables are configured in production:
 
 ---
 
-## 2. Option A: Deploy to AWS EC2 (Docker Compose) — Primary
+## 2. Option A: Deploy to AWS EC2 (Single-Instance / Free Tier / Recommended for College Viva)
 
-### Step 1: Launch EC2 Instance
-1. In the **AWS Management Console**, navigate to **EC2** and click **Launch Instance**.
-2. **AMI**: Amazon Linux 2023 or Ubuntu 22.04 LTS.
-3. **Instance Type**: `t3.small` or `t3.medium` (minimum 2 GB RAM recommended for Docker builds).
-4. **Key Pair**: Select or create an SSH key pair (`.pem`).
-5. **Security Group**:
-   - Inbound rules:
-     - `SSH` (port 22) from your IP.
-     - `HTTP` (port 80) from `0.0.0.0/0`.
-     - `HTTPS` (port 443) from `0.0.0.0/0`.
+The fastest and most reliable way to showcase a 100% self-hosted, cloud-native instance on AWS. It uses Docker Compose to run PostgreSQL 16, the Express API, and an Nginx reverse-proxied React frontend.
 
-### Step 2: Connect & Execute Automated Deployment
-SSH into the instance and run the automated deployment script:
+### Step 1: Launch EC2 Instance in AWS Console
+1. Log in to the **AWS Management Console** -> navigate to **EC2** -> click **Launch Instance**.
+2. **Name**: `reviewpilot-production`.
+3. **AMI**: **Amazon Linux 2023** or **Ubuntu 22.04 LTS** (64-bit x86).
+4. **Instance Type**: `t3.small` (2 vCPU, 2 GiB RAM) or `t2.micro` (Free Tier eligible).
+5. **Key Pair**: Select or create an SSH key pair (e.g. `reviewpilot-key.pem`).
+6. **Network / Security Group**:
+   - Check **Allow SSH traffic** from anywhere (or your IP).
+   - Check **Allow HTTP traffic from the internet** (Port 80).
+   - Check **Allow HTTPS traffic from the internet** (Port 443).
+   - Add custom TCP rule for Port 5000 (if direct API access is desired).
+7. Click **Launch Instance**.
+
+### Step 2: One-Command Automated Deployment
+Connect to your EC2 instance via SSH and run the automated provisioning script:
+
 ```bash
-ssh -i your-key.pem ec2-user@<YOUR-EC2-PUBLIC-IP>
+# 1. Connect to EC2
+ssh -i reviewpilot-key.pem ubuntu@<YOUR-EC2-PUBLIC-IP>
+# (Or 'ec2-user@<YOUR-EC2-PUBLIC-IP>' if using Amazon Linux 2023)
 
-# Clone ReviewPilot and execute setup
-git clone https://github.com/Raghunath2604/ReviewPilot.git /opt/reviewpilot
-cd /opt/reviewpilot
-
-# Run the verified EC2 deployment script
-chmod +x scripts/deploy-ec2.sh
-./scripts/deploy-ec2.sh
+# 2. Run the ReviewPilot 1-Click Deployment Script
+curl -sSL https://raw.githubusercontent.com/Raghunath2604/ReviewPilot/main/scripts/deploy-ec2.sh | bash
 ```
 
-### Step 3: Configure Let's Encrypt SSL (HTTPS)
-To configure free automated TLS certificates:
-```bash
-sudo dnf install -y certbot python3-certbot-nginx # or apt-get install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d yourdomain.com
-```
+The script automatically:
+1. Installs Docker engine and Docker Compose v2.
+2. Clones the repository to `/opt/reviewpilot`.
+3. Generates production environment files with secure secrets.
+4. Builds and launches all 3 containers (`postgres:16`, `backend`, `frontend`).
+5. Probes `/api/v1/health` until all health checks pass.
+6. Displays your live public web application URL!
+
+### Step 3: Automated CI/CD Deployment via GitHub Actions
+To automatically deploy to EC2 every time you push code to `main`:
+1. In your GitHub repository, go to **Settings** -> **Secrets and variables** -> **Actions**.
+2. Add the following repository secrets:
+   - `AWS_EC2_HOST`: Your EC2 Public IPv4 address (e.g., `54.210.12.34`).
+   - `AWS_EC2_USER`: `ubuntu` (or `ec2-user`).
+   - `AWS_EC2_SSH_KEY`: The entire contents of your `.pem` private key file.
 
 ---
 
-## 3. Option B: Deploy to AWS ECS Fargate & Amazon RDS
+## 3. Option B: Deploy to AWS App Runner (Serverless PaaS)
+
+AWS App Runner provides fully managed container execution with automatic TLS, load balancing, and zero infrastructure maintenance:
+
+1. Build and push your backend Docker image to **Amazon ECR**:
+   ```bash
+   aws ecr create-repository --repository-name reviewpilot-backend --region us-east-1
+   aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com
+   docker build -t <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/reviewpilot-backend:latest -f docker/Dockerfile.backend backend
+   docker push <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/reviewpilot-backend:latest
+   ```
+2. In AWS Console, go to **AWS App Runner** -> click **Create Service**.
+3. Choose **Container registry** -> **Amazon ECR** -> select `reviewpilot-backend:latest`.
+4. Configure Port `5000` and pass environment variables (`DATABASE_URL`, `JWT_SECRET`, `ANTHROPIC_API_KEY`).
+5. App Runner automatically provisions an `https://xxxx.awsapprunner.com` URL with 99.99% uptime.
+
+---
+
+## 4. Option C: Deploy to AWS ECS Fargate & Amazon RDS (Enterprise Architecture)
+
+For an enterprise-grade multi-tier architecture:
+1. **Managed Database**: Provision an **Amazon RDS PostgreSQL 16** db instance in your VPC private subnet.
+2. **Secrets**: Store sensitive credentials in **AWS Secrets Manager**:
+   - `reviewpilot/DATABASE_URL`
+   - `reviewpilot/JWT_SECRET`
+   - `reviewpilot/ANTHROPIC_API_KEY`
+3. **Register Task Definition**:
+   ```bash
+   aws ecs register-task-definition --cli-input-json file://aws/task-definition.json
+   ```
+4. **Create ECS Service**:
+   Deploy the task definition to an ECS cluster backed by AWS Fargate with an Application Load Balancer (ALB).
+
+---
+
+## 5. Option D: Render Deployment (Zero-Config Fallback)
 
 For a fully managed container service:
 1. **Database**: Create an **Amazon RDS PostgreSQL 16** instance in your private VPC subnet.

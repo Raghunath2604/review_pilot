@@ -221,6 +221,8 @@ export const NewReview: React.FC = () => {
                     <span className="text-slate-400 font-medium">Load sample:</span>
                     <button
                       type="button"
+                      id="load-sample-diff-btn"
+                      data-testid="load-sample-diff-btn"
                       onClick={() => loadSampleDiff('jwt')}
                       className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-semibold transition"
                     >

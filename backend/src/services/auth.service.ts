@@ -5,7 +5,7 @@ import { env } from '../config/env.js';
 import { AppError } from '../middlewares/error.middleware.js';
 import { JwtPayload } from '../types/index.js';
 
-const SALT_ROUNDS = 12;
+const SALT_ROUNDS = process.env.NODE_ENV === 'test' ? 1 : 12;
 
 export class AuthService {
   static async register(email: string, password: string) {
