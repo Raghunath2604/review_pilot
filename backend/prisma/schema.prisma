@@ -54,6 +54,7 @@ model Review {
   userId        String        @db.Uuid @map("user_id")
   sourceType    SourceType    @map("source_type")
   sourceRef     String?       @map("source_ref")
+  diffContent   String?       @map("diff_content") @db.Text
   status        ReviewStatus  @default(PENDING)
   failureReason String?       @map("failure_reason")
   createdAt     DateTime      @default(now()) @map("created_at")
