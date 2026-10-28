@@ -27,7 +27,7 @@
 | Service | Endpoint / Link | Status | Credentials / Notes |
 |---|---|:---:|---|
 | **Live Web App (Vercel)** | [https://frontend-zeta-lac-46lt7f6msf.vercel.app](https://frontend-zeta-lac-46lt7f6msf.vercel.app) | 🟢 **Live** | Production frontend on Vercel Global Edge |
-| **Live API Engine (Cloudflare)** | [Live Health Check](https://ingredients-jury-hindu-separation.trycloudflare.com/api/v1/health) | 🟢 **Live** | REST API & PostgreSQL 16 via Cloudflare Edge tunnel |
+| **Live API Engine (Cloudflare)** | [Live Health Check](https://refugees-works-streets-languages.trycloudflare.com/api/v1/health) | 🟢 **Live** | REST API & PostgreSQL 16 via Cloudflare Edge tunnel |
 | **Demo Login** | Pre-loaded on `/login` | 🟢 **Active** | `demo-dev@reviewpilot.io` / `Password123!` (1-click autofill button included) |
 | **GitHub Actions CI/CD** | [Actions Workflow Runs](https://github.com/Raghunath2604/ReviewPilot/actions) | 🟢 **Passing (4/4 jobs)** | Backend Vitest, Frontend RTL, Playwright E2E, Deploy |
 | **Cloud Deployment** | [Render Blueprint](render.yaml) | 🟢 **Configured** | 1-click autonomous deploy for PostgreSQL + Express API + React |

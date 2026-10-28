@@ -7,8 +7,23 @@ import {
   StatsResponse,
 } from '../types';
 
-const API_HOST = import.meta.env.VITE_API_BASE_URL || '';
-const BASE_URL = `${API_HOST}/api/v1`;
+export const getApiHost = (): string => {
+  if (typeof window !== 'undefined') {
+    const custom = localStorage.getItem('reviewpilot_api_host');
+    if (custom) return custom;
+  }
+  return import.meta.env.VITE_API_BASE_URL || '';
+};
+
+export const setCustomApiHost = (host: string): void => {
+  if (typeof window !== 'undefined') {
+    if (host && host.trim()) {
+      localStorage.setItem('reviewpilot_api_host', host.trim().replace(/\/+$/, ''));
+    } else {
+      localStorage.removeItem('reviewpilot_api_host');
+    }
+  }
+};
 
 class ApiError extends Error {
   statusCode: number;
@@ -22,6 +37,8 @@ class ApiError extends Error {
 }
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  const host = getApiHost();
+  const baseUrl = `${host}/api/v1`;
   const token = typeof window !== 'undefined' ? localStorage.getItem('reviewpilot_token') : null;
   const authHeaders: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -35,7 +52,16 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     },
   };
 
-  const response = await fetch(`${BASE_URL}${endpoint}`, config);
+  let response: Response;
+  try {
+    response = await fetch(`${baseUrl}${endpoint}`, config);
+  } catch (netErr) {
+    const detail = (netErr as Error).message || 'Network unreachable';
+    throw new ApiError(
+      `Cannot connect to ReviewPilot API at ${host || 'same-origin'}. Server may be sleeping or unreachable (${detail}).`,
+      0
+    );
+  }
 
   let data: any = {};
   const contentType = response.headers.get('content-type');
@@ -56,6 +82,13 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 }
 
 export const api = {
+  // System Health
+  async checkHealth(): Promise<{ status: string; db: string }> {
+    const host = getApiHost();
+    const res = await fetch(`${host}/api/v1/health`);
+    if (!res.ok) throw new Error(`Health check returned HTTP ${res.status}`);
+    return res.json();
+  },
   // Auth
   async register(email: string, password: string): Promise<{ user: User }> {
     const res = await request<{ user: User; token?: string }>('/auth/register', {
