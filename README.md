@@ -26,11 +26,12 @@
 
 | Service | Endpoint / Link | Status | Credentials / Notes |
 |---|---|:---:|---|
-| **Live Web App (Vercel)** | [https://frontend-zeta-lac-46lt7f6msf.vercel.app](https://frontend-zeta-lac-46lt7f6msf.vercel.app) | 🟢 **Live** | Production frontend on Vercel Global Edge |
-| **Live API Engine (Cloudflare)** | [Live Health Check](https://refugees-works-streets-languages.trycloudflare.com/api/v1/health) | 🟢 **Live** | REST API & PostgreSQL 16 via Cloudflare Edge tunnel |
+| **Production App (Vercel)** | [https://reviewpilot-gamma-indol.vercel.app](https://reviewpilot-gamma-indol.vercel.app) <br> [https://frontend-zeta-lac-46lt7f6msf.vercel.app](https://frontend-zeta-lac-46lt7f6msf.vercel.app) | 🟢 **Live (200 OK)** | Production React 18 + Vite SPA deployed on Vercel Edge |
+| **Backend REST API** | [Live Health Check](https://gains-grow-specifically-harrison.trycloudflare.com/api/v1/health) | 🟢 **Live (DB Connected)** | 10 REST endpoints with PostgreSQL 16 & Zod AI validation |
+| **GitHub Repository** | [github.com/Raghunath2604/review_pilot](https://github.com/Raghunath2604/review_pilot) | 🟢 **Active** | Full-stack monorepo with CI/CD and AWS ECS/EC2 configs |
 | **Demo Login** | Pre-loaded on `/login` | 🟢 **Active** | `demo-dev@reviewpilot.io` / `Password123!` (1-click autofill button included) |
-| **GitHub Actions CI/CD** | [Actions Workflow Runs](https://github.com/Raghunath2604/ReviewPilot/actions) | 🟢 **Passing (4/4 jobs)** | Backend Vitest, Frontend RTL, Playwright E2E, Deploy |
-| **Cloud Deployment** | [Render Blueprint](render.yaml) | 🟢 **Configured** | 1-click autonomous deploy for PostgreSQL + Express API + React |
+| **GitHub Actions CI/CD** | [Actions Workflow Runs](https://github.com/Raghunath2604/ReviewPilot/actions) | 🟢 **Passing (4/4 jobs)** | Backend Vitest, Frontend RTL, Playwright E2E, AWS Deploy |
+| **AWS & Cloud Deploy** | [Deployment Guide](docs/deployment.md) • [render.yaml](render.yaml) | 🟢 **Configured** | AWS EC2 (scripts/deploy-ec2.sh), AWS ECS Fargate, Render |
 
 ---
 
