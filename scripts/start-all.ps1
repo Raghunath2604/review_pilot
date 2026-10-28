@@ -1,5 +1,6 @@
-# ReviewPilot - One-Click Local Development Launcher (PowerShell)
-# Starts Docker PostgreSQL, runs migrations if needed, and launches Backend & Frontend
+param(
+    [switch]$WithTunnel
+)
 
 $ErrorActionPreference = "Stop"
 
@@ -43,8 +44,17 @@ Write-Host "Demo User:    demo-dev@reviewpilot.io / Password123!" -ForegroundCol
 Write-Host "--------------------------------------------------------" -ForegroundColor Gray
 Write-Host "Press Ctrl+C in either terminal to stop.`n" -ForegroundColor Gray
 
+# Optional: Launch Cloudflare Tunnel
+if ($WithTunnel) {
+    if (Test-Path "$PSScriptRoot/../cloudflared.exe") {
+        Write-Host "Launching Cloudflare Tunnel..." -ForegroundColor Cyan
+        Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PSScriptRoot/..'; Write-Host 'Starting Cloudflare Tunnel to http://127.0.0.1:5000...' -ForegroundColor Magenta; .\cloudflared.exe tunnel --url http://127.0.0.1:5000"
+    }
+}
+
 # Launch Backend in new window and Frontend in current window
 Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PSScriptRoot/../backend'; Write-Host 'Starting ReviewPilot Backend...' -ForegroundColor Cyan; node dist/server.js"
 Push-Location frontend
 npm run dev
 Pop-Location
+
