@@ -9,7 +9,6 @@ import {
   Loader2,
   Sparkles,
   CheckCircle2,
-  Key,
   Server,
   RefreshCw,
   Settings,
@@ -71,11 +70,6 @@ export const Login: React.FC = () => {
     }
   };
 
-  const fillDemoCredentials = () => {
-    setEmail('demo-dev@reviewpilot.io');
-    setPassword('Password123!');
-    setError(null);
-  };
 
   return (
     <div className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -124,20 +118,9 @@ export const Login: React.FC = () => {
                   Sign in
                 </h2>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Enter your credentials or use the demo account below
+                  Enter your credentials to access your code review workspace
                 </p>
               </div>
-
-              {/* 1-Click Demo Fill Button */}
-              <button
-                type="button"
-                onClick={fillDemoCredentials}
-                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/80 hover:bg-indigo-100 transition shadow-sm"
-                title="Fill demo developer credentials"
-              >
-                <Key className="w-3.5 h-3.5" />
-                <span>Fill Demo Credentials</span>
-              </button>
             </div>
 
             {/* Error Notification */}
@@ -178,7 +161,7 @@ export const Login: React.FC = () => {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="demo-dev@reviewpilot.io"
+                  placeholder="alex@company.com"
                   className="block w-full rounded-xl bg-white border border-slate-200 px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
                 />
               </div>

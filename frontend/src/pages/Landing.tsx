@@ -152,11 +152,11 @@ export const Landing: React.FC = () => {
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <a
-                href="#interactive-demo"
+                href="#live-preview"
                 className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-3.5 rounded-full text-base font-semibold bg-white/90 hover:bg-white text-slate-700 border border-slate-200 shadow-sm hover:border-slate-300 transition-all hover:scale-[1.02]"
               >
                 <Sparkles className="w-4 h-4 text-indigo-600" />
-                <span>Try Live Sandbox</span>
+                <span>Live Preview</span>
               </a>
             </div>
 
@@ -224,12 +224,12 @@ export const Landing: React.FC = () => {
         </div>
       </section>
 
-      {/* ---------------- 3. INTERACTIVE LIVE DIFF SANDBOX ---------------- */}
-      <section id="interactive-demo" className="py-16 bg-white/70 border-y border-slate-200/80">
+      {/* ---------------- 3. LIVE CODE ANALYSIS PREVIEW ---------------- */}
+      <section id="live-preview" className="py-16 bg-white/70 border-y border-slate-200/80">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <span className="text-xs font-bold uppercase tracking-widest text-indigo-600">
-              Interactive Live Sandbox
+              Live Code Analysis Preview
             </span>
             <h2 className="text-3xl font-bold text-slate-900 mt-2">
               See How ReviewPilot Analyzes Code

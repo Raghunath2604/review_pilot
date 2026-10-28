@@ -40,9 +40,9 @@ export const Navbar: React.FC = () => {
           {!user && (
             <div className="hidden md:flex items-center space-x-7 text-sm font-medium text-slate-600">
               <a href="#features" className="hover:text-indigo-600 transition-colors">Features</a>
-              <a href="#interactive-demo" className="hover:text-indigo-600 transition-colors flex items-center gap-1">
+              <a href="#live-preview" className="hover:text-indigo-600 transition-colors flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                <span>Live Sandbox</span>
+                <span>Live Preview</span>
               </a>
               <a href="#testimonials" className="hover:text-indigo-600 transition-colors">Testimonials</a>
               <a href="#architecture" className="hover:text-indigo-600 transition-colors flex items-center gap-1">
