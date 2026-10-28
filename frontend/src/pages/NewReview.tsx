@@ -8,9 +8,11 @@ import {
   Loader2,
   Sparkles,
   ArrowLeft,
-  FileCode,
   Zap,
   Terminal,
+  Key,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 const SAMPLE_DIFF = `diff --git a/src/auth/jwt.ts b/src/auth/jwt.ts
@@ -39,7 +41,7 @@ const SAMPLE_REDOS = `diff --git a/src/utils/parser.ts b/src/utils/parser.ts
 -  return input.trim();
 +  // Catastrophic nested regex backtracking
 +  return input.replace(/([a-zA-Z0-9]+)+$/, '');
-}`;
+ }`;
 
 const MAX_DIFF_BYTES = 200 * 1024; // 200 KB
 
@@ -50,6 +52,14 @@ export const NewReview: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisStep, setAnalysisStep] = useState(1);
+
+  // Optional custom AI key configuration
+  const [showKeyConfig, setShowKeyConfig] = useState(false);
+  const [customApiKey, setCustomApiKey] = useState(
+    typeof window !== 'undefined'
+      ? localStorage.getItem('reviewpilot_custom_llm_key') || ''
+      : ''
+  );
 
   const navigate = useNavigate();
 
@@ -76,6 +86,15 @@ export const NewReview: React.FC = () => {
       }
     }
 
+    // Save key in localStorage if user entered one
+    if (typeof window !== 'undefined') {
+      if (customApiKey.trim()) {
+        localStorage.setItem('reviewpilot_custom_llm_key', customApiKey.trim());
+      } else {
+        localStorage.removeItem('reviewpilot_custom_llm_key');
+      }
+    }
+
     setIsAnalyzing(true);
     setAnalysisStep(1);
 
@@ -88,6 +107,7 @@ export const NewReview: React.FC = () => {
         sourceType,
         diff: sourceType === 'DIFF' ? diffText : undefined,
         prUrl: sourceType === 'GITHUB_PR' ? prUrl : undefined,
+        apiKey: customApiKey.trim() || undefined,
       });
 
       clearInterval(stepInterval);
@@ -99,21 +119,20 @@ export const NewReview: React.FC = () => {
     }
   };
 
-  const loadSampleDiff = () => {
+  const loadSampleDiff = (type: 'jwt' | 'redos') => {
     setSourceType('DIFF');
-    setDiffText(SAMPLE_DIFF);
-    setError(null);
-  };
-
-  const loadReDosDiff = () => {
-    setSourceType('DIFF');
-    setDiffText(SAMPLE_REDOS);
+    if (type === 'jwt') {
+      setDiffText(SAMPLE_DIFF);
+    } else {
+      setDiffText(SAMPLE_REDOS);
+    }
     setError(null);
   };
 
   return (
     <div className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
+        {/* Back Link */}
         <Link
           to="/"
           className="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-600 hover:text-indigo-600 transition"
@@ -122,115 +141,119 @@ export const NewReview: React.FC = () => {
           <span>Back to Dashboard</span>
         </Link>
 
-        <div className="glass-card rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-slate-100">
-            <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-700 px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-100 mb-1.5">
-                <Sparkles className="w-3 h-3" />
-                <span>Anthropic Claude 3.5 Sonnet Analysis</span>
-              </div>
-              <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center space-x-2">
-                <span>Create New Code Review</span>
-              </h1>
-              <p className="text-xs text-slate-500 mt-1">
-                Unified diffs are quarantined in isolated &lt;diff_content&gt; boundaries and validated against strict Zod schemas.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
-              <button
-                type="button"
-                onClick={loadSampleDiff}
-                id="load-sample-diff-btn"
-                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/80 hover:bg-indigo-100 transition shadow-sm"
-              >
-                <FileCode className="w-3.5 h-3.5" />
-                <span>Load Sample Vulnerable Diff</span>
-              </button>
-              <button
-                type="button"
-                onClick={loadReDosDiff}
-                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200/80 hover:bg-amber-100 transition shadow-sm"
-              >
-                <Zap className="w-3.5 h-3.5" />
-                <span>Load ReDoS Sample</span>
-              </button>
-            </div>
+        {/* Page Header */}
+        <div className="space-y-1">
+          <div className="flex items-center space-x-2">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+              New Code Review
+            </h1>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+              <Sparkles className="w-3 h-3 text-indigo-600" />
+              <span>AI Engine</span>
+            </span>
           </div>
+          <p className="text-sm text-slate-500">
+            Submit unified git diffs or public GitHub pull requests to detect vulnerabilities, performance bottlenecks, and missing tests.
+          </p>
+        </div>
 
+        {/* Main Review Form Card */}
+        <div className="glass-card rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm">
           {error && (
             <div
-              id="review-error-alert"
-              className="flex items-start space-x-2.5 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm"
+              id="new-review-error-alert"
+              className="flex items-start space-x-2.5 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs sm:text-sm"
             >
               <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Source Type Selector */}
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
-                Select Code Source
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  id="source-type-diff-btn"
-                  onClick={() => setSourceType('DIFF')}
-                  className={`flex items-center justify-center space-x-2 py-3 px-4 rounded-xl border text-sm font-semibold transition ${
-                    sourceType === 'DIFF'
-                      ? 'bg-indigo-50 border-indigo-500 text-indigo-900 shadow-sm'
-                      : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                  }`}
-                >
-                  <FileDiff className="w-4 h-4 text-indigo-600" />
-                  <span>Raw Unified Diff</span>
-                </button>
+          {/* Source Type Toggle */}
+          <div className="space-y-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
+              Select Input Method
+            </label>
+            <div className="grid grid-cols-2 gap-3 max-w-md">
+              <button
+                type="button"
+                id="source-type-diff-btn"
+                onClick={() => setSourceType('DIFF')}
+                className={`flex items-center justify-center space-x-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold transition border ${
+                  sourceType === 'DIFF'
+                    ? 'bg-indigo-50 border-indigo-300 text-indigo-700 shadow-sm'
+                    : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <FileDiff className="w-4 h-4" />
+                <span>Unified Git Diff</span>
+              </button>
 
-                <button
-                  type="button"
-                  id="source-type-github-btn"
-                  onClick={() => setSourceType('GITHUB_PR')}
-                  className={`flex items-center justify-center space-x-2 py-3 px-4 rounded-xl border text-sm font-semibold transition ${
-                    sourceType === 'GITHUB_PR'
-                      ? 'bg-indigo-50 border-indigo-500 text-indigo-900 shadow-sm'
-                      : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                  }`}
-                >
-                  <GitPullRequest className="w-4 h-4 text-indigo-600" />
-                  <span>GitHub Pull Request URL</span>
-                </button>
-              </div>
+              <button
+                type="button"
+                id="source-type-pr-btn"
+                onClick={() => setSourceType('GITHUB_PR')}
+                className={`flex items-center justify-center space-x-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold transition border ${
+                  sourceType === 'GITHUB_PR'
+                    ? 'bg-indigo-50 border-indigo-300 text-indigo-700 shadow-sm'
+                    : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <GitPullRequest className="w-4 h-4" />
+                <span>GitHub Pull Request</span>
+              </button>
             </div>
+          </div>
 
-            {/* Input Component */}
+          <form className="space-y-6" onSubmit={handleSubmit}>
             {sourceType === 'DIFF' ? (
-              <div>
-                <div className="flex items-center justify-between mb-2">
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <label
                     htmlFor="diff-textarea"
                     className="block text-xs font-bold uppercase tracking-wider text-slate-600"
                   >
-                    Unified Git Diff (Capped at 200 KB)
+                    Paste Unified Diff
                   </label>
-                  <span
-                    className={`text-xs font-mono font-semibold ${
-                      isDiffTooLarge ? 'text-rose-600' : 'text-slate-500'
-                    }`}
-                  >
-                    {(diffBytes / 1024).toFixed(1)} KB / 200 KB
-                  </span>
-                </div>
-                <div className="rounded-xl border border-slate-800 overflow-hidden shadow-inner bg-[#0B0F19]">
-                  <div className="flex items-center justify-between px-3 py-2 bg-slate-900 border-b border-slate-800 text-[11px] font-mono text-slate-400">
-                    <span className="flex items-center gap-1.5">
-                      <Terminal className="w-3.5 h-3.5 text-indigo-400" />
-                      <span>unified_diff.patch</span>
-                    </span>
-                    <span>{diffText.split('\n').filter(Boolean).length} lines</span>
+
+                  {/* 1-Click Sample Preset Buttons */}
+                  <div className="flex items-center space-x-2 text-xs">
+                    <span className="text-slate-400 font-medium">Load sample:</span>
+                    <button
+                      type="button"
+                      onClick={() => loadSampleDiff('jwt')}
+                      className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-semibold transition"
+                    >
+                      Vulnerable JWT
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => loadSampleDiff('redos')}
+                      className="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-semibold transition"
+                    >
+                      ReDoS Regex
+                    </button>
                   </div>
+                </div>
+
+                {/* Diff Editor Container */}
+                <div className="relative rounded-xl border border-slate-700/80 bg-slate-950 overflow-hidden shadow-inner">
+                  <div className="flex items-center justify-between px-4 py-2 border-b border-slate-800 bg-slate-900/90 text-xs font-mono text-slate-400">
+                    <div className="flex items-center space-x-2">
+                      <Terminal className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>unified.patch</span>
+                    </div>
+                    <div className="text-[11px]">
+                      {diffBytes > 0 ? (
+                        <span className={isDiffTooLarge ? 'text-rose-400 font-bold' : 'text-slate-400'}>
+                          {(diffBytes / 1024).toFixed(1)} KB / 200 KB
+                        </span>
+                      ) : (
+                        <span>0 KB</span>
+                      )}
+                    </div>
+                  </div>
+
                   <textarea
                     id="diff-textarea"
                     data-testid="diff-textarea"
@@ -265,6 +288,37 @@ export const NewReview: React.FC = () => {
               </div>
             )}
 
+            {/* Optional Custom AI Provider Configuration */}
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => setShowKeyConfig(!showKeyConfig)}
+                className="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-600 hover:text-indigo-600 transition"
+              >
+                <Key className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Custom AI Provider API Key (Optional)</span>
+                {showKeyConfig ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+              </button>
+
+              {showKeyConfig && (
+                <div className="mt-2.5 p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2 text-xs">
+                  <p className="text-slate-600">
+                    Enter your personal <strong>Anthropic Claude</strong> key (<code>sk-ant-...</code>) or <strong>Google Gemini</strong> key (<code>AIza...</code>) to execute real-time live model inference:
+                  </p>
+                  <input
+                    type="password"
+                    value={customApiKey}
+                    onChange={(e) => setCustomApiKey(e.target.value)}
+                    placeholder="sk-ant-... or AIza..."
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-mono text-slate-800 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+                  />
+                  <p className="text-[11px] text-slate-400">
+                    * If left empty, ReviewPilot uses the preconfigured system engine and defensive AST rules.
+                  </p>
+                </div>
+              )}
+            </div>
+
             {/* Analysis Progress Stepper */}
             {isAnalyzing && (
               <div className="p-4 rounded-xl bg-indigo-50/80 border border-indigo-100 space-y-2.5">
@@ -277,7 +331,7 @@ export const NewReview: React.FC = () => {
                     1. Diff Quarantining
                   </div>
                   <div className={`p-2 rounded-lg border ${analysisStep >= 2 ? 'bg-white text-indigo-700 border-indigo-200 shadow-sm' : 'text-slate-400 border-slate-200'}`}>
-                    2. Claude 3.5 Sonnet
+                    2. LLM Inference
                   </div>
                   <div className={`p-2 rounded-lg border ${analysisStep >= 3 ? 'bg-white text-indigo-700 border-indigo-200 shadow-sm' : 'text-slate-400 border-slate-200'}`}>
                     3. Zod Validation
@@ -298,11 +352,11 @@ export const NewReview: React.FC = () => {
                 {isAnalyzing ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Analyzing diff with Anthropic Claude & validating findings...</span>
+                    <span>Analyzing Code Changes...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4" />
+                    <Zap className="w-4 h-4" />
                     <span>Start Automated Code Review</span>
                   </>
                 )}

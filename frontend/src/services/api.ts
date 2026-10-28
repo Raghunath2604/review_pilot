@@ -10,7 +10,21 @@ import {
 export const getApiHost = (): string => {
   if (typeof window !== 'undefined') {
     const custom = localStorage.getItem('reviewpilot_api_host');
-    if (custom) return custom;
+    const envBase = import.meta.env.VITE_API_BASE_URL || '';
+    if (custom) {
+      // Automatically purge stale ephemeral tunnel hosts from previous sessions
+      if (
+        (custom.includes('.trycloudflare.com') ||
+          custom.includes('.lhr.life') ||
+          custom.includes('.loca.lt')) &&
+        custom !== envBase
+      ) {
+        localStorage.removeItem('reviewpilot_api_host');
+        return envBase;
+      }
+      return custom;
+    }
+    return envBase;
   }
   return import.meta.env.VITE_API_BASE_URL || '';
 };
@@ -130,6 +144,7 @@ export const api = {
     sourceType: 'DIFF' | 'GITHUB_PR';
     diff?: string;
     prUrl?: string;
+    apiKey?: string;
   }): Promise<{ review: ReviewDetail }> {
     return request<{ review: ReviewDetail }>('/reviews', {
       method: 'POST',

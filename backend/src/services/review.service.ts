@@ -2,7 +2,7 @@ import { prisma } from '../db/prisma.js';
 import { AppError } from '../middlewares/error.middleware.js';
 import { CreateReviewInput } from '../schemas/review.schema.js';
 import { GitHubService } from './github.service.js';
-import { getLlmService } from './llm/index.js';
+import { getLlmService, AnthropicLlmService, GeminiLlmService } from './llm/index.js';
 import { FindingOutput } from './llm/llm.interface.js';
 
 export class ReviewService {
@@ -34,7 +34,15 @@ export class ReviewService {
 
     // 3. Process LLM review with graceful failure handling
     try {
-      const llmService = getLlmService();
+      let llmService = getLlmService();
+      if (input.apiKey && input.apiKey.trim().length > 0) {
+        const key = input.apiKey.trim();
+        if (key.startsWith('AIza')) {
+          llmService = new GeminiLlmService(key);
+        } else {
+          llmService = new AnthropicLlmService(key);
+        }
+      }
       const findings: FindingOutput[] = await llmService.reviewDiff(diffContent);
 
       // Save findings and mark review as COMPLETED in a single transaction

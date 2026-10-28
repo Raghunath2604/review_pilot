@@ -23,4 +23,5 @@ export const setLlmService = (service: ILlmService): void => {
 
 export * from './llm.interface.js';
 export * from './anthropic.service.js';
+export * from './gemini.service.js';
 export * from './mock.service.js';

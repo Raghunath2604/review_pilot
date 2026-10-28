@@ -10,6 +10,7 @@ export const createReviewSchema = z.object({
       }),
       diff: z.string().optional(),
       prUrl: z.string().url('Invalid GitHub PR URL format').optional(),
+      apiKey: z.string().optional(),
     })
     .superRefine((data, ctx) => {
       if (data.sourceType === 'DIFF') {
