@@ -44,10 +44,10 @@ sequenceDiagram
     Dev->>Gateway: Submit Diff or GitHub PR URL
     Gateway->>API: POST /api/v1/reviews
     API->>Limiter: Check user rate limit bucket
-    Limiter->>Auth: Verify Bearer token / httpOnly cookie
+    Limiter->>Auth: Verify Bearer token or httpOnly cookie
     Auth->>ReviewSvc: Execute review pipeline
-    ReviewSvc->>DB: INSERT INTO reviews (status = PENDING)
-    ReviewSvc->>LLM: Pass diff inside <diff_content> sandbox (temp: 0.1)
+    ReviewSvc->>DB: Insert review with status PENDING
+    ReviewSvc->>LLM: Send diff with system prompt instructions
     LLM-->>ReviewSvc: JSON array of findings
     
     alt Schema Validation Failure
@@ -55,11 +55,11 @@ sequenceDiagram
         LLM-->>ReviewSvc: Corrected JSON array
     end
 
-    ReviewSvc->>DB: Persist findings; UPDATE reviews (status = COMPLETED)
-    ReviewSvc-->>Dev: Return Review & Findings (201 Created)
+    ReviewSvc->>DB: Persist findings and update status to COMPLETED
+    ReviewSvc-->>Dev: Return review and findings (201 Created)
     
     Dev->>API: PATCH /api/v1/findings/:id/feedback (ACCEPTED)
-    API->>DB: Update finding feedback & compute precision
+    API->>DB: Update finding feedback and compute precision
     DB-->>Dev: Return updated precision metrics (200 OK)
 ```
 
