@@ -19,11 +19,11 @@ ReviewPilot analyzes raw unified git diffs and GitHub Pull Requests to detect bu
 | :--- | :--- | :---: | :--- |
 | **Production Web App** | [reviewpilot-gamma-indol.vercel.app](https://reviewpilot-gamma-indol.vercel.app) | Online | React 18 SPA hosted on Vercel Edge |
 | **Alternate Mirror** | [frontend-zeta-lac-46lt7f6msf.vercel.app](https://frontend-zeta-lac-46lt7f6msf.vercel.app) | Online | Direct production build alias |
-| **Backend REST API** | [API Health Endpoint](https://gains-grow-specifically-harrison.trycloudflare.com/api/v1/health) | Online | Node.js / Express API with PostgreSQL 16 |
+| **Backend REST API** | [API Health Endpoint](https://strange-aquarium-varieties-stays.trycloudflare.com/api/v1/health) | Online | Node.js / Express API with PostgreSQL 16 |
 | **Source Code** | [github.com/Raghunath2604/review_pilot](https://github.com/Raghunath2604/review_pilot) | Active | Monorepo containing backend, frontend, and infra |
 
-**Demo Account:** `demo-dev@reviewpilot.io` / `Password123!` *(Autofill button available on login page)*  
-**Admin Account:** `alex@reviewpilot.dev` / `password123`
+**Evaluation Account:** `alex@reviewpilot.dev` / `password123`  
+*Any user can also register their own free account immediately on the sign-up page.*
 
 ---
 
@@ -38,7 +38,7 @@ sequenceDiagram
     participant Limiter as Rate Limiter (10 req/hr)
     participant Auth as JWT Auth Middleware
     participant ReviewSvc as Review Domain Service
-    participant LLM as Claude 3.5 / Gemini 1.5
+    participant LLM as Gemini 3.1 Flash Lite / Claude 3.5
     participant DB as PostgreSQL 16 (Prisma)
 
     Dev->>Gateway: Submit Diff or GitHub PR URL
