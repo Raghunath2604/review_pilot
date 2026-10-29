@@ -43,7 +43,7 @@ export const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <BrowserRouter>
+        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <SmoothScroll>
             <div className="min-h-screen bg-[#FAF8FF] text-slate-900 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
               <Navbar />

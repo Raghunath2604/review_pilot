@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 import {
   Code2,
   ArrowRight,
@@ -11,6 +13,7 @@ import {
 } from 'lucide-react';
 
 export const Register: React.FC = () => {
+  const registerRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,6 +22,25 @@ export const Register: React.FC = () => {
 
   const { register } = useAuth();
   const navigate = useNavigate();
+
+  useGSAP(
+    () => {
+      gsap.from('.register-context-pane', {
+        x: -30,
+        opacity: 0,
+        duration: 0.75,
+        ease: 'power3.out',
+      });
+      gsap.from('.register-card-pane', {
+        x: 30,
+        opacity: 0,
+        duration: 0.75,
+        delay: 0.1,
+        ease: 'power3.out',
+      });
+    },
+    { scope: registerRef }
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,9 +70,9 @@ export const Register: React.FC = () => {
 
   return (
     <div className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div ref={registerRef} className="max-w-4xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         {/* Left Column: Context */}
-        <div className="hidden lg:block lg:col-span-5 space-y-6">
+        <div className="register-context-pane hidden lg:block lg:col-span-5 space-y-6">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-600/25">
             <Code2 className="w-6 h-6" />
           </div>
@@ -85,7 +107,7 @@ export const Register: React.FC = () => {
         </div>
 
         {/* Right Column: Register Card */}
-        <div className="lg:col-span-7">
+        <div className="register-card-pane lg:col-span-7">
           <div className="glass-card rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-200/80 space-y-6">
             <div>
               <h2 className="text-2xl font-bold tracking-tight text-slate-900">

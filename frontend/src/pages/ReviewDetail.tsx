@@ -29,8 +29,19 @@ export const ReviewDetail: React.FC = () => {
   const [selectedSeverity, setSelectedSeverity] = useState<Severity | 'ALL'>('ALL');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'ALL'>('ALL');
 
+  const {
+    data,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['review', id],
+    queryFn: () => api.getReviewById(id!),
+    enabled: Boolean(id),
+  });
+
   useGSAP(
     () => {
+      if (isLoading || !data?.review) return;
       gsap.from('.detail-summary-card', {
         y: -25,
         opacity: 0,
@@ -45,18 +56,8 @@ export const ReviewDetail: React.FC = () => {
         ease: 'power3.out',
       });
     },
-    { scope: detailRef }
+    { scope: detailRef, dependencies: [isLoading, data?.review] }
   );
-
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['review', id],
-    queryFn: () => api.getReviewById(id!),
-    enabled: Boolean(id),
-  });
 
   const feedbackMutation = useMutation({
     mutationFn: ({
