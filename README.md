@@ -19,7 +19,7 @@ ReviewPilot analyzes raw unified git diffs and GitHub Pull Requests to detect bu
 | :--- | :--- | :---: | :--- |
 | **Production Web App** | [reviewpilot-gamma-indol.vercel.app](https://reviewpilot-gamma-indol.vercel.app) | Online | React 18 SPA hosted on Vercel Edge |
 | **Alternate Mirror** | [frontend-zeta-lac-46lt7f6msf.vercel.app](https://frontend-zeta-lac-46lt7f6msf.vercel.app) | Online | Direct production build alias |
-| **Backend REST API** | [API Health Endpoint](https://strange-aquarium-varieties-stays.trycloudflare.com/api/v1/health) | Online | Node.js / Express API with PostgreSQL 16 |
+| **Backend REST API** | [API Health Endpoint](https://gender-suburban-christopher-arrivals.trycloudflare.com/api/v1/health) | Online | Node.js / Express API with PostgreSQL 16 |
 | **Source Code** | [github.com/Raghunath2604/review_pilot](https://github.com/Raghunath2604/review_pilot) | Active | Monorepo containing backend, frontend, and infra |
 
 **Evaluation Account:** `alex@reviewpilot.dev` / `password123`  
