@@ -29,9 +29,9 @@ const HomeRoute: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-[80vh] flex flex-col items-center justify-center text-slate-600 space-y-3">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-        <p className="text-sm font-semibold">Initializing ReviewPilot...</p>
+      <div className="min-h-[80vh] flex flex-col items-center justify-center text-slate-400 space-y-3">
+        <Loader2 className="w-8 h-8 animate-spin text-indigo-400" />
+        <p className="text-sm font-semibold text-slate-300">Initializing ReviewPilot...</p>
       </div>
     );
   }
@@ -45,7 +45,7 @@ export const App: React.FC = () => {
       <AuthProvider>
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <SmoothScroll>
-            <div className="min-h-screen bg-[#FAF8FF] text-slate-900 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+            <div className="min-h-screen bg-[#080B11] text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white bg-mesh-dark">
               <Navbar />
             <main className="flex-1">
               <Routes>

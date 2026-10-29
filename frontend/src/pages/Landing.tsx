@@ -1,34 +1,34 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
 import {
-  Sparkles,
-  ArrowRight,
   ShieldCheck,
   Zap,
-  CheckCircle2,
-  Code2,
-  Lock,
-  Check,
-  Star,
   Layers,
+  ArrowRight,
+  Code2,
+  CheckCircle2,
+  Lock,
   Cpu,
   BarChart3,
   Copy,
+  Check,
+  Sparkles,
   Terminal,
+  Star,
 } from 'lucide-react';
 import { SpotlightCard } from '../components/bits/SpotlightCard';
 import { DecryptedText } from '../components/bits/DecryptedText';
+import { ParticlesBackground } from '../components/bits/ParticlesBackground';
 import { ShinyBadge } from '../components/bits/ShinyBadge';
 import { MagnetButton } from '../components/bits/MagnetButton';
-import { ParticlesBackground } from '../components/bits/ParticlesBackground';
 import { TiltedCard } from '../components/bits/TiltedCard';
 import { GsapStagger } from '../components/animations/GsapStagger';
 import { GsapCounter } from '../components/animations/GsapCounter';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(ScrollTrigger);
 
 interface SampleDiffPreset {
   id: string;
@@ -113,8 +113,8 @@ const SAMPLE_PRESETS: SampleDiffPreset[] = [
         category: 'TESTING',
         file: 'src/services/billing.ts',
         line: 9,
-        message: 'New guard clause lacks unit test coverage for negative amount or zero amount conditions.',
-        suggestion: 'Add test cases verifying processRefund throws when amount <= 0.',
+        message: 'Branch condition (amount <= 0) has 0% branch coverage in test suite.',
+        suggestion: 'Add unit tests for zero and negative refund amounts: expect(() => processRefund(-5, "USD")).toThrow();',
       },
     ],
   },
@@ -183,40 +183,40 @@ export const Landing: React.FC = () => {
   };
 
   return (
-    <div ref={containerRef} className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 overflow-hidden">
+    <div ref={containerRef} className="text-slate-100 min-h-screen overflow-hidden">
       {/* ---------------- 1. HERO SECTION ---------------- */}
-      <section className="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden">
-        <ParticlesBackground particleCount={45} className="opacity-45" />
+      <section className="relative pt-16 pb-24 md:pt-24 md:pb-36 overflow-hidden">
+        <ParticlesBackground particleCount={50} className="opacity-40" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto space-y-6">
+          <div className="text-center max-w-4xl mx-auto space-y-7">
             {/* Shiny Pill Badge from React Bits */}
             <div className="hero-badge-wrap flex justify-center">
-              <ShinyBadge icon={<Sparkles className="w-3.5 h-3.5 text-indigo-600" />}>
+              <ShinyBadge icon={<Sparkles className="w-3.5 h-3.5 text-indigo-400" />}>
                 Next-Gen Code Review Platform • Live Gemini 3.1 & Claude Engine
               </ShinyBadge>
             </div>
 
             {/* Giant Headline with Cyberpunk Decrypted Reveal */}
-            <h1 className="hero-main-title text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
+            <h1 className="hero-main-title text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white leading-[1.08]">
               Automated Code Reviews that Feel Like a{' '}
-              <span className="gradient-text-accent inline-block font-extrabold">
+              <span className="gradient-text-accent inline-block font-black">
                 <DecryptedText text="Principal Engineer" speed={35} maxIterations={12} />
               </span>{' '}
               on Your Team.
             </h1>
 
             {/* Subheader */}
-            <p className="hero-main-sub text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
+            <p className="hero-main-sub text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-normal">
               Paste a unified diff or GitHub pull request URL. ReviewPilot catches subtle security risks,
               race conditions, and unindexed queries with line-level fixes and an auditable precision feedback loop.
             </p>
 
             {/* CTA Buttons with React Bits Magnet Button */}
-            <div className="hero-cta-btns pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="hero-cta-btns pt-3 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/register" id="hero-get-started-btn">
                 <MagnetButton
                   padding={80}
-                  className="px-8 py-3.5 rounded-full text-base font-semibold bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-xl shadow-indigo-600/30 transition-all hover:shadow-indigo-600/50 flex items-center gap-2"
+                  className="px-8 py-4 rounded-full text-base font-bold bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-[0_0_30px_-3px_rgba(99,102,241,0.6)] transition-all flex items-center gap-2"
                 >
                   <span>Start Reviewing Free</span>
                   <ArrowRight className="w-4 h-4" />
@@ -225,72 +225,72 @@ export const Landing: React.FC = () => {
               <a href="#live-preview">
                 <MagnetButton
                   padding={60}
-                  className="px-8 py-3.5 rounded-full text-base font-semibold bg-white/90 hover:bg-white text-slate-700 border border-slate-200/90 shadow-sm hover:border-slate-300 transition-all flex items-center gap-2"
+                  className="px-8 py-4 rounded-full text-base font-semibold bg-white/[0.05] hover:bg-white/[0.1] text-white border border-white/[0.1] shadow-lg transition-all flex items-center gap-2 backdrop-blur-md"
                 >
-                  <Sparkles className="w-4 h-4 text-indigo-600" />
+                  <Sparkles className="w-4 h-4 text-indigo-400" />
                   <span>Live Preview</span>
                 </MagnetButton>
               </a>
             </div>
 
             {/* Micro-guarantee */}
-            <div className="hero-micro-guarantee pt-2 flex items-center justify-center space-x-6 text-xs text-slate-500">
+            <div className="hero-micro-guarantee pt-3 flex items-center justify-center space-x-6 text-xs text-slate-400">
               <span className="flex items-center gap-1.5">
-                <Check className="w-3.5 h-3.5 text-emerald-600 font-bold" />
+                <Check className="w-3.5 h-3.5 text-emerald-400 font-bold" />
                 No credit card required
               </span>
               <span className="flex items-center gap-1.5">
-                <Check className="w-3.5 h-3.5 text-emerald-600 font-bold" />
+                <Check className="w-3.5 h-3.5 text-emerald-400 font-bold" />
                 Zero prompt injection leakage
               </span>
               <span className="flex items-center gap-1.5">
-                <Check className="w-3.5 h-3.5 text-emerald-600 font-bold" />
+                <Check className="w-3.5 h-3.5 text-emerald-400 font-bold" />
                 GitHub REST API ready
               </span>
             </div>
           </div>
 
-          {/* ---------------- 2. FLOATING GLASS STATS BAR (Reference Image Match) ---------------- */}
-          <div className="hero-floating-stats mt-14 max-w-5xl mx-auto">
-            <div className="glass-pill rounded-2xl p-6 sm:p-8 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/60">
+          {/* ---------------- 2. FLOATING GLASS STATS BAR ---------------- */}
+          <div className="hero-floating-stats mt-16 max-w-5xl mx-auto">
+            <div className="glass-pill rounded-3xl p-6 sm:p-8 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 divide-y sm:divide-y-0 sm:divide-x divide-white/[0.08]">
               <div className="text-center sm:text-left sm:pl-2">
-                <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">
                   <GsapCounter value={99} suffix="%" duration={1.6} />
                 </div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mt-1">
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">
                   AI Precision Rate
                 </div>
-                <div className="text-[11px] text-slate-400 mt-0.5">Verified by real developers</div>
+                <div className="text-[11px] text-slate-500 mt-0.5">Verified by real developers</div>
               </div>
 
               <div className="text-center sm:text-left sm:pl-6 pt-4 sm:pt-0">
-                <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                  &lt; 1.2<span className="text-indigo-600">s</span>
+                <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                  &lt; 1.2<span className="text-indigo-400">s</span>
                 </div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mt-1">
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">
                   Review Latency
                 </div>
-                <div className="text-[11px] text-slate-400 mt-0.5">Accelerated single-turn extraction</div>
+                <div className="text-[11px] text-slate-500 mt-0.5">Accelerated single-turn extraction</div>
               </div>
 
               <div className="text-center sm:text-left sm:pl-6 pt-4 sm:pt-0">
-                <div className="text-3xl sm:text-4xl font-extrabold text-emerald-600 tracking-tight">
-                  0<span className="text-emerald-500">%</span>
+                <div className="text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight">
+                  0<span className="text-emerald-400/80">%</span>
                 </div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mt-1">
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">
                   Injection Risk
                 </div>
-                <div className="text-[11px] text-slate-400 mt-0.5">Rigid XML isolation barrier</div>
+                <div className="text-[11px] text-slate-500 mt-0.5">Rigid XML isolation barrier</div>
               </div>
 
               <div className="text-center sm:text-left sm:pl-6 pt-4 sm:pt-0">
-                <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                <div className="text-3xl sm:text-4xl font-black text-white tracking-tight">
                   <GsapCounter value={100} suffix="%" duration={1.8} />
                 </div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mt-1">
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">
                   Zod Validated
                 </div>
-                <div className="text-[11px] text-slate-400 mt-0.5">Deterministic schema recovery</div>
+                <div className="text-[11px] text-slate-500 mt-0.5">Deterministic schema recovery</div>
               </div>
             </div>
           </div>
@@ -298,16 +298,16 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* ---------------- 3. LIVE CODE ANALYSIS PREVIEW ---------------- */}
-      <section id="live-preview" className="py-16 bg-white/70 border-y border-slate-200/80">
+      <section id="live-preview" className="py-20 bg-slate-950/60 border-y border-white/[0.08] backdrop-blur-md">
         <div className="live-preview-content max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-xs font-bold uppercase tracking-widest text-indigo-600">
+            <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">
               Live Code Analysis Preview
             </span>
-            <h2 className="text-3xl font-bold text-slate-900 mt-2">
+            <h2 className="text-3xl sm:text-4xl font-black text-white mt-2">
               See How ReviewPilot Analyzes Code
             </h2>
-            <p className="text-sm text-slate-600 mt-2">
+            <p className="text-sm text-slate-400 mt-2">
               Select a sample pull request diff below to inspect the real-time structured findings,
               category classifications, and line-level fixes.
             </p>
@@ -321,16 +321,16 @@ export const Landing: React.FC = () => {
                 onClick={() => setActivePreset(preset)}
                 className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${
                   activePreset.id === preset.id
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
-                    : 'bg-white text-slate-700 border border-slate-200 hover:border-indigo-300'
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-[0_0_15px_rgba(99,102,241,0.5)] border border-indigo-400/40'
+                    : 'bg-white/[0.04] text-slate-400 border border-white/[0.08] hover:text-white hover:bg-white/[0.08]'
                 }`}
               >
                 <span>{preset.title}</span>
                 <span
-                  className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
+                  className={`text-[10px] px-2 py-0.5 rounded font-mono ${
                     activePreset.id === preset.id
-                      ? 'bg-white/20 text-white'
-                      : 'bg-slate-100 text-slate-600'
+                      ? 'bg-white/20 text-white font-bold'
+                      : 'bg-white/[0.06] text-slate-400'
                   }`}
                 >
                   {preset.badge}
@@ -341,123 +341,123 @@ export const Landing: React.FC = () => {
 
           {/* IDE Container Card with React Bits TiltedCard 3D Hover */}
           <TiltedCard maxRotation={2.5} scale={1.005}>
-            <div className="bg-slate-950 rounded-2xl shadow-2xl border border-slate-800 overflow-hidden text-slate-200">
-            {/* Window Header */}
-            <div className="flex items-center justify-between px-4 py-3 bg-slate-900/90 border-b border-slate-800">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 rounded-full bg-rose-500/80" />
-                <div className="w-3 h-3 rounded-full bg-amber-500/80" />
-                <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
-                <span className="ml-3 font-mono text-xs text-slate-400">
-                  {activePreset.file}
-                </span>
-              </div>
-              <button
-                onClick={() => handleCopy(activePreset.diff)}
-                className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white px-2.5 py-1 rounded bg-slate-800/60 hover:bg-slate-800 transition"
-              >
-                {copiedCode ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copy Diff</span>
-                  </>
-                )}
-              </button>
-            </div>
-
-            {/* Code Diff Display */}
-            <div className="p-4 sm:p-6 font-mono text-xs sm:text-sm overflow-x-auto bg-[#0B0F19] leading-relaxed">
-              {activePreset.diff.split('\n').map((line, idx) => {
-                let colorClass = 'text-slate-400';
-                let bgClass = 'bg-transparent';
-                if (line.startsWith('+') && !line.startsWith('+++')) {
-                  colorClass = 'text-emerald-400 font-medium';
-                  bgClass = 'bg-emerald-500/10 -mx-4 sm:-mx-6 px-4 sm:px-6';
-                } else if (line.startsWith('-') && !line.startsWith('---')) {
-                  colorClass = 'text-rose-400 line-through opacity-80';
-                  bgClass = 'bg-rose-500/10 -mx-4 sm:-mx-6 px-4 sm:px-6';
-                } else if (line.startsWith('@@')) {
-                  colorClass = 'text-indigo-400 font-semibold';
-                }
-                return (
-                  <div key={idx} className={`${bgClass} py-0.5`}>
-                    <span className={colorClass}>{line}</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Structured Findings Output Panel */}
-            <div className="bg-slate-900 border-t border-slate-800 p-4 sm:p-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Terminal className="w-4 h-4 text-indigo-400" />
-                  <span className="font-semibold text-xs text-slate-300 uppercase tracking-wider">
-                    ReviewPilot Analysis Finding
+            <div className="bg-[#05070C] rounded-3xl shadow-[0_0_50px_-10px_rgba(0,0,0,0.8)] border border-slate-800 overflow-hidden text-slate-200">
+              {/* Window Header */}
+              <div className="flex items-center justify-between px-5 py-3.5 bg-slate-900/90 border-b border-slate-800">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-rose-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+                  <span className="ml-3 font-mono text-xs text-slate-400">
+                    {activePreset.file}
                   </span>
                 </div>
-                <span className="text-xs text-emerald-400 font-medium flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  Zod Validated
-                </span>
+                <button
+                  onClick={() => handleCopy(activePreset.diff)}
+                  className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] transition"
+                >
+                  {copiedCode ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-emerald-400 font-semibold">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy Diff</span>
+                    </>
+                  )}
+                </button>
               </div>
 
-              {activePreset.findings.map((finding, idx) => (
-                <div
-                  key={idx}
-                  className="bg-slate-950/80 rounded-xl p-4 border border-slate-800 space-y-2.5"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                          finding.severity === 'HIGH'
-                            ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                            : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                        }`}
-                      >
-                        {finding.severity} SEVERITY
-                      </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                        {finding.category}
-                      </span>
+              {/* Code Diff Display */}
+              <div className="p-4 sm:p-6 font-mono text-xs sm:text-sm overflow-x-auto bg-[#070A10] leading-relaxed">
+                {activePreset.diff.split('\n').map((line, idx) => {
+                  let colorClass = 'text-slate-400';
+                  let bgClass = 'bg-transparent';
+                  if (line.startsWith('+') && !line.startsWith('+++')) {
+                    colorClass = 'text-emerald-400 font-medium';
+                    bgClass = 'bg-emerald-500/10 -mx-4 sm:-mx-6 px-4 sm:px-6';
+                  } else if (line.startsWith('-') && !line.startsWith('---')) {
+                    colorClass = 'text-rose-400 line-through opacity-80';
+                    bgClass = 'bg-rose-500/10 -mx-4 sm:-mx-6 px-4 sm:px-6';
+                  } else if (line.startsWith('@@')) {
+                    colorClass = 'text-indigo-400 font-semibold';
+                  }
+                  return (
+                    <div key={idx} className={`${bgClass} py-0.5`}>
+                      <span className={colorClass}>{line}</span>
                     </div>
-                    <span className="font-mono text-xs text-slate-400">
-                      Line {finding.line}
+                  );
+                })}
+              </div>
+
+              {/* Structured Findings Output Panel */}
+              <div className="bg-slate-900/90 border-t border-slate-800 p-4 sm:p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Terminal className="w-4 h-4 text-indigo-400" />
+                    <span className="font-bold text-xs text-slate-300 uppercase tracking-wider">
+                      ReviewPilot Analysis Finding
                     </span>
                   </div>
-
-                  <p className="text-xs sm:text-sm text-slate-200 font-sans">
-                    {finding.message}
-                  </p>
-
-                  <div className="bg-slate-900/90 rounded-lg p-2.5 border border-slate-800 font-mono text-xs text-indigo-300">
-                    <span className="text-slate-500 block mb-1">Suggested Remediation:</span>
-                    <code>{finding.suggestion}</code>
-                  </div>
+                  <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    Zod Validated
+                  </span>
                 </div>
-              ))}
-            </div>
-          </div>
-        </TiltedCard>
-      </div>
-    </section>
 
-      {/* ---------------- 4. FEATURE PILLARS ("Boost Your Skills" in Reference) ---------------- */}
-      <section id="features" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {activePreset.findings.map((finding, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-[#05070C] rounded-2xl p-4 sm:p-5 border border-slate-800/90 space-y-3 shadow-inner"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${
+                            finding.severity === 'HIGH'
+                              ? 'bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-[0_0_10px_rgba(244,63,94,0.2)]'
+                              : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                          }`}
+                        >
+                          {finding.severity} SEVERITY
+                        </span>
+                        <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+                          {finding.category}
+                        </span>
+                      </div>
+                      <span className="font-mono text-xs text-slate-400">
+                        Line {finding.line}
+                      </span>
+                    </div>
+
+                    <p className="text-xs sm:text-sm text-slate-200 font-normal leading-relaxed">
+                      {finding.message}
+                    </p>
+
+                    <div className="bg-[#0B0F19] rounded-xl p-3 border border-slate-800 font-mono text-xs text-indigo-300">
+                      <span className="text-slate-500 block mb-1">Suggested Remediation:</span>
+                      <code>{finding.suggestion}</code>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </TiltedCard>
+        </div>
+      </section>
+
+      {/* ---------------- 4. FEATURE PILLARS ---------------- */}
+      <section id="features" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="text-xs font-bold uppercase tracking-widest text-indigo-600">
+          <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">
             Core Analysis Pillars
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">
+          <h2 className="text-3xl sm:text-4xl font-black text-white mt-2">
             Engineered for Production Excellence
           </h2>
-          <p className="text-slate-600 mt-2 text-sm sm:text-base">
+          <p className="text-slate-400 mt-2 text-sm sm:text-base">
             Every pull request is scrutinized across four deep engineering vectors with verifiable reasoning.
           </p>
         </div>
@@ -465,20 +465,20 @@ export const Landing: React.FC = () => {
         <GsapStagger selector=".pillar-card" stagger={0.12} className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Card 1: Security */}
           <SpotlightCard
-            spotlightColor="rgba(239, 68, 68, 0.16)"
-            className="pillar-card p-7 relative transition-all duration-300 hover:-translate-y-1.5"
+            spotlightColor="rgba(239, 68, 68, 0.22)"
+            className="pillar-card p-8 rounded-3xl relative transition-all duration-300 hover:-translate-y-1.5"
           >
-            <div className="w-12 h-12 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-red-600 mb-5 shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400 mb-5 shadow-[0_0_15px_rgba(239,68,68,0.3)]">
               <ShieldCheck className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2">
+            <h3 className="text-lg font-bold text-white mb-2">
               Deep Security & Vulnerabilities
             </h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-sm text-slate-400 leading-relaxed">
               Detects SQL injection, broken object-level authorization (IDOR), ReDoS, hardcoded secrets,
               and cross-site scripting vulnerabilities before they hit production branches.
             </p>
-            <div className="mt-5 pt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-red-600">
+            <div className="mt-5 pt-4 border-t border-white/[0.08] flex items-center text-xs font-semibold text-red-400">
               <span>OWASP Top 10 Aligned</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </div>
@@ -486,20 +486,20 @@ export const Landing: React.FC = () => {
 
           {/* Card 2: Performance */}
           <SpotlightCard
-            spotlightColor="rgba(245, 158, 11, 0.16)"
-            className="pillar-card p-7 relative transition-all duration-300 hover:-translate-y-1.5"
+            spotlightColor="rgba(245, 158, 11, 0.22)"
+            className="pillar-card p-8 rounded-3xl relative transition-all duration-300 hover:-translate-y-1.5"
           >
-            <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 mb-5 shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-5 shadow-[0_0_15px_rgba(245,158,11,0.3)]">
               <Zap className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2">
+            <h3 className="text-lg font-bold text-white mb-2">
               Performance & Algorithmic Traps
             </h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-sm text-slate-400 leading-relaxed">
               Flags O(N²) quadratic loops, unindexed relational database queries, unhandled Promise memory leaks,
               and connection pool exhaustions before latency regressions occur.
             </p>
-            <div className="mt-5 pt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-amber-600">
+            <div className="mt-5 pt-4 border-t border-white/[0.08] flex items-center text-xs font-semibold text-amber-400">
               <span>Sub-millisecond Focus</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </div>
@@ -507,20 +507,20 @@ export const Landing: React.FC = () => {
 
           {/* Card 3: Testing */}
           <SpotlightCard
-            spotlightColor="rgba(16, 185, 129, 0.16)"
-            className="pillar-card p-7 relative transition-all duration-300 hover:-translate-y-1.5"
+            spotlightColor="rgba(16, 185, 129, 0.22)"
+            className="pillar-card p-8 rounded-3xl relative transition-all duration-300 hover:-translate-y-1.5"
           >
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 mb-5 shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-5 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
               <Layers className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2">
+            <h3 className="text-lg font-bold text-white mb-2">
               Missing Test Synthesis
             </h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-sm text-slate-400 leading-relaxed">
               Identifies uncovered branch edge-cases, null pointer conditions, and generates ready-to-paste
               unit test specifications in Vitest or Jest.
             </p>
-            <div className="mt-5 pt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-emerald-600">
+            <div className="mt-5 pt-4 border-t border-white/[0.08] flex items-center text-xs font-semibold text-emerald-400">
               <span>High-Branch Coverage</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </div>
@@ -528,81 +528,81 @@ export const Landing: React.FC = () => {
         </GsapStagger>
       </section>
 
-      {/* ---------------- 5. TESTIMONIALS (Reference Match) ---------------- */}
-      <section id="testimonials" className="py-20 bg-white/70 border-t border-slate-200/80">
+      {/* ---------------- 5. TESTIMONIALS ---------------- */}
+      <section id="testimonials" className="py-24 bg-slate-950/60 border-t border-white/[0.08]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="text-xs font-bold uppercase tracking-widest text-indigo-600">
+            <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">
               Developer Endorsements
             </span>
-            <h2 className="text-3xl font-extrabold text-slate-900 mt-2">
+            <h2 className="text-3xl sm:text-4xl font-black text-white mt-2">
               Trusted by High-Velocity Engineering Teams
             </h2>
-            <p className="text-slate-600 mt-2 text-sm">
+            <p className="text-slate-400 mt-2 text-sm">
               See what tech leads and senior software engineers say about ReviewPilot in daily CI workflows.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="testimonial-card glass-card rounded-2xl p-6 space-y-4">
+            <div className="testimonial-card glass-card rounded-3xl p-7 space-y-4">
               <div className="flex items-center space-x-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400" />
+                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <p className="text-sm text-slate-700 italic leading-relaxed">
+              <p className="text-sm text-slate-300 italic leading-relaxed">
                 "ReviewPilot caught a subtle JWT replay vulnerability and an unindexed Prisma query in our pull request
                 that two senior reviewers missed. It paid for itself on day one."
               </p>
               <div className="flex items-center space-x-3 pt-2">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-white font-bold text-sm flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-white font-bold text-sm flex items-center justify-center shadow-md">
                   AC
                 </div>
                 <div>
-                  <div className="font-bold text-sm text-slate-900">Alex Chen</div>
-                  <div className="text-xs text-slate-500">Staff SDE @ FinTech Cloud</div>
+                  <div className="font-bold text-sm text-white">Alex Chen</div>
+                  <div className="text-xs text-slate-400">Staff SDE @ FinTech Cloud</div>
                 </div>
               </div>
             </div>
 
-            <div className="testimonial-card glass-card rounded-2xl p-6 space-y-4">
+            <div className="testimonial-card glass-card rounded-3xl p-7 space-y-4">
               <div className="flex items-center space-x-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400" />
+                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <p className="text-sm text-slate-700 italic leading-relaxed">
+              <p className="text-sm text-slate-300 italic leading-relaxed">
                 "The feedback loop is the killer feature. Instead of generic LLM hallucinations, ReviewPilot tracks
                 whether findings were accepted, driving our false-positive rate under 1%."
               </p>
               <div className="flex items-center space-x-3 pt-2">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-600 text-white font-bold text-sm flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-600 text-white font-bold text-sm flex items-center justify-center shadow-md">
                   SJ
                 </div>
                 <div>
-                  <div className="font-bold text-sm text-slate-900">Sarah Jenkins</div>
-                  <div className="text-xs text-slate-500">VP of Engineering @ OpenScale</div>
+                  <div className="font-bold text-sm text-white">Sarah Jenkins</div>
+                  <div className="text-xs text-slate-400">VP of Engineering @ OpenScale</div>
                 </div>
               </div>
             </div>
 
-            <div className="testimonial-card glass-card rounded-2xl p-6 space-y-4">
+            <div className="testimonial-card glass-card rounded-3xl p-7 space-y-4">
               <div className="flex items-center space-x-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-amber-400" />
+                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <p className="text-sm text-slate-700 italic leading-relaxed">
+              <p className="text-sm text-slate-300 italic leading-relaxed">
                 "The diff isolation barrier is crucial for enterprise security. Malicious contributors cannot inject
                 prompt overrides into our automated code analysis."
               </p>
               <div className="flex items-center space-x-3 pt-2">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-amber-600 text-white font-bold text-sm flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-amber-600 text-white font-bold text-sm flex items-center justify-center shadow-md">
                   DR
                 </div>
                 <div>
-                  <div className="font-bold text-sm text-slate-900">Devon Rivera</div>
-                  <div className="text-xs text-slate-500">Security Lead @ CloudMesh</div>
+                  <div className="font-bold text-sm text-white">Devon Rivera</div>
+                  <div className="text-xs text-slate-400">Security Lead @ CloudMesh</div>
                 </div>
               </div>
             </div>
@@ -611,56 +611,56 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* ---------------- 6. ARCHITECTURE & SECURITY SECTION ---------------- */}
-      <section id="architecture" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="arch-card glass-card rounded-3xl p-8 sm:p-12 border border-indigo-100 shadow-xl relative overflow-hidden">
+      <section id="architecture" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="arch-card glass-card rounded-3xl p-8 sm:p-12 border border-indigo-500/30 shadow-[0_0_40px_-5px_rgba(99,102,241,0.2)] relative overflow-hidden">
           <div className="max-w-3xl">
-            <span className="text-xs font-bold uppercase tracking-widest text-indigo-600">
+            <span className="text-xs font-bold uppercase tracking-widest text-indigo-400">
               Enterprise Security Architecture
             </span>
-            <h2 className="text-3xl font-bold text-slate-900 mt-2">
+            <h2 className="text-3xl sm:text-4xl font-black text-white mt-2">
               Engineered with Defensive AI Boundaries
             </h2>
-            <p className="text-slate-600 mt-3 text-sm sm:text-base leading-relaxed">
+            <p className="text-slate-400 mt-3 text-sm sm:text-base leading-relaxed">
               Unlike consumer chatbots that naively concatenate inputs, ReviewPilot wraps every pull request in four
               isolated reliability layers to guarantee security and zero prompt leakage.
             </p>
 
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex items-start space-x-3 bg-white/80 p-3.5 rounded-xl border border-slate-200/80">
-                <Lock className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+              <div className="flex items-start space-x-3 bg-white/[0.03] p-4 rounded-2xl border border-white/[0.08]">
+                <Lock className="w-5 h-5 text-indigo-400 mt-0.5 flex-shrink-0" />
                 <div>
-                  <div className="font-bold text-xs text-slate-900">Prompt Injection Isolation</div>
-                  <div className="text-xs text-slate-500 mt-0.5">
+                  <div className="font-bold text-xs text-white">Prompt Injection Isolation</div>
+                  <div className="text-xs text-slate-400 mt-0.5">
                     Diffs quarantined within rigid &lt;diff_content&gt; delimiters.
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 bg-white/80 p-3.5 rounded-xl border border-slate-200/80">
-                <Cpu className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+              <div className="flex items-start space-x-3 bg-white/[0.03] p-4 rounded-2xl border border-white/[0.08]">
+                <Cpu className="w-5 h-5 text-indigo-400 mt-0.5 flex-shrink-0" />
                 <div>
-                  <div className="font-bold text-xs text-slate-900">Zod Schema Self-Healing</div>
-                  <div className="text-xs text-slate-500 mt-0.5">
+                  <div className="font-bold text-xs text-white">Zod Schema Self-Healing</div>
+                  <div className="text-xs text-slate-400 mt-0.5">
                     Single-retry automated recovery with exact error feedback.
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 bg-white/80 p-3.5 rounded-xl border border-slate-200/80">
-                <ShieldCheck className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+              <div className="flex items-start space-x-3 bg-white/[0.03] p-4 rounded-2xl border border-white/[0.08]">
+                <ShieldCheck className="w-5 h-5 text-emerald-400 mt-0.5 flex-shrink-0" />
                 <div>
-                  <div className="font-bold text-xs text-slate-900">Recursive PII Masking</div>
-                  <div className="text-xs text-slate-500 mt-0.5">
+                  <div className="font-bold text-xs text-white">Recursive PII Masking</div>
+                  <div className="text-xs text-slate-400 mt-0.5">
                     Tokens, passwords, and sensitive keys scrubbed before logging.
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 bg-white/80 p-3.5 rounded-xl border border-slate-200/80">
-                <BarChart3 className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+              <div className="flex items-start space-x-3 bg-white/[0.03] p-4 rounded-2xl border border-white/[0.08]">
+                <BarChart3 className="w-5 h-5 text-indigo-400 mt-0.5 flex-shrink-0" />
                 <div>
-                  <div className="font-bold text-xs text-slate-900">Auditable Precision Rate</div>
-                  <div className="text-xs text-slate-500 mt-0.5">
+                  <div className="font-bold text-xs text-white">Auditable Precision Rate</div>
+                  <div className="text-xs text-slate-400 mt-0.5">
                     Continuous feedback loop computing verified precision.
                   </div>
                 </div>
@@ -671,19 +671,19 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* ---------------- 7. CALL TO ACTION ---------------- */}
-      <section className="py-20 bg-gradient-to-tr from-indigo-900 via-indigo-800 to-purple-900 text-white relative">
+      <section className="py-24 bg-gradient-to-tr from-indigo-950 via-slate-900 to-slate-950 text-white relative border-t border-white/[0.08]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
             Ready to Catch Vulnerabilities Before Merge?
           </h2>
-          <p className="text-indigo-200 max-w-xl mx-auto text-sm sm:text-base">
+          <p className="text-slate-400 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
             Join thousands of developers using ReviewPilot to maintain pristine codebases, eliminate security regressions, and ship faster.
           </p>
-          <div className="pt-2">
+          <div className="pt-3">
             <Link
               to="/register"
               id="cta-bottom-register-btn"
-              className="inline-flex items-center space-x-2 px-8 py-4 rounded-full text-base font-bold bg-white text-indigo-900 hover:bg-slate-100 shadow-xl transition-all hover:scale-105 active:scale-95"
+              className="inline-flex items-center space-x-2 px-8 py-4 rounded-full text-base font-bold bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-[0_0_30px_-3px_rgba(99,102,241,0.6)] transition-all hover:scale-105 active:scale-95"
             >
               <span>Get Started Free — No Credit Card</span>
               <ArrowRight className="w-4 h-4" />
@@ -693,26 +693,26 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* ---------------- 8. FOOTER ---------------- */}
-      <footer className="bg-white border-t border-slate-200 py-12 text-xs text-slate-500">
+      <footer className="bg-[#05070C] border-t border-white/[0.08] py-12 text-xs text-slate-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2">
-            <Code2 className="w-4 h-4 text-indigo-600" />
-            <span className="font-bold text-slate-800 text-sm">ReviewPilot</span>
-            <span className="text-slate-400">© 2026. Built with React 18, Node.js 20 & Claude 3.5 Sonnet.</span>
+            <Code2 className="w-4 h-4 text-indigo-400" />
+            <span className="font-bold text-white text-sm">ReviewPilot</span>
+            <span className="text-slate-500">© 2026. Built with React 18, Node.js 20 & Claude 3.5 Sonnet.</span>
           </div>
           <div className="flex items-center space-x-6">
             <a
               href="https://github.com/Raghunath2604/ReviewPilot"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-indigo-600 transition"
+              className="hover:text-white transition"
             >
               GitHub Repository
             </a>
-            <Link to="/login" className="hover:text-indigo-600 transition">
+            <Link to="/login" className="hover:text-white transition">
               Sign In
             </Link>
-            <Link to="/register" className="hover:text-indigo-600 transition">
+            <Link to="/register" className="hover:text-white transition">
               Register
             </Link>
           </div>

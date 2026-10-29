@@ -4,14 +4,14 @@
 
 @layer base {
   :root {
-    --bg-canvas: #fafbfe;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #64748b;
+    --bg-canvas: #080B11;
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
   }
 
   body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background-color: var(--bg-canvas);
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
@@ -23,30 +23,36 @@
   }
 }
 
-/* Custom Utilities for Premium Non-AI Aesthetic */
+/* Custom Utilities for Ultra-Sleek Dark Developer Studio (Linear / Cursor / Vercel style) */
 @layer utilities {
-  .bg-mesh-radial {
-    background: 
-      radial-gradient(circle at 15% 10%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
-      radial-gradient(circle at 85% 15%, rgba(168, 85, 247, 0.06) 0%, transparent 45%),
-      radial-gradient(circle at 50% 50%, rgba(244, 114, 182, 0.04) 0%, transparent 60%),
-      radial-gradient(circle at 20% 85%, rgba(14, 165, 233, 0.06) 0%, transparent 45%);
+  .bg-mesh-dark {
+    background-color: #080B11;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% -15%, rgba(99, 102, 241, 0.18), transparent 75%),
+      radial-gradient(ellipse 50% 40% at 85% 20%, rgba(168, 85, 247, 0.12), transparent 60%),
+      radial-gradient(ellipse 40% 40% at 15% 80%, rgba(14, 165, 233, 0.08), transparent 60%);
   }
 
-  .glass-pill {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(224, 231, 255, 0.8);
-    box-shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.08);
+  .bg-cyber-grid {
+    background-size: 32px 32px;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-card-subtle {
+    background: rgba(15, 23, 42, 0.45);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(226, 232, 240, 0.8);
-    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .glass-card-hover {
@@ -55,37 +61,62 @@
 
   .glass-card-hover:hover {
     transform: translateY(-2px);
-    border-color: rgba(199, 210, 254, 0.9);
-    box-shadow: 0 16px 36px -8px rgba(79, 70, 229, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+    border-color: rgba(99, 102, 241, 0.35);
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6), 0 0 24px -4px rgba(99, 102, 241, 0.2);
+  }
+
+  .glass-pill {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .gradient-text-glow {
+    background: linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .gradient-text-brand {
-    background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 50%, #6366f1 100%);
+    background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 50%, #818CF8 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   .gradient-text-accent {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
+    background: linear-gradient(135deg, #818CF8 0%, #A855F7 50%, #EC4899 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
+  .neon-border-indigo {
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 15px -2px rgba(99, 102, 241, 0.3);
+  }
+
+  .neon-border-emerald {
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 15px -2px rgba(16, 185, 129, 0.25);
+  }
 }
 
-/* Custom Scrollbars */
+/* Custom Scrollbars in Obsidian */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #080B11;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #1e293b;
   border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #334155;
 }
 
 /* Lenis Smooth Scroll Recommended Rules */
