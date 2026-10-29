@@ -49,9 +49,7 @@ export const GsapCounter: React.FC<GsapCounterProps> = ({
 
   return (
     <span ref={counterRef} id={id} className={className}>
-      {prefix}
-      {displayValue}
-      {suffix}
+      {prefix}{displayValue}{suffix}
     </span>
   );
 };

@@ -10,7 +10,6 @@ import {
   ThumbsUp,
   ThumbsDown,
   Check,
-  AlertTriangle,
   Copy,
 } from 'lucide-react';
 import { SpotlightCard } from '../bits/SpotlightCard';
@@ -23,25 +22,22 @@ interface FindingCardProps {
 
 const severityConfig: Record<
   Severity,
-  { label: string; bg: string; text: string; dot: string }
+  { label: string; badgeClass: string; dot: string }
 > = {
   HIGH: {
     label: 'High Severity',
-    bg: 'bg-rose-500/15 text-rose-300 border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.2)]',
-    text: 'text-rose-400',
-    dot: 'bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.8)]',
+    badgeClass: 'border-rose-500/30 text-rose-300 bg-rose-500/10',
+    dot: 'bg-rose-400',
   },
   MEDIUM: {
     label: 'Medium Severity',
-    bg: 'bg-amber-500/15 text-amber-300 border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.2)]',
-    text: 'text-amber-400',
-    dot: 'bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.8)]',
+    badgeClass: 'border-amber-500/30 text-amber-300 bg-amber-500/10',
+    dot: 'bg-amber-400',
   },
   LOW: {
     label: 'Low Severity',
-    bg: 'bg-sky-500/15 text-sky-300 border-sky-500/30 shadow-[0_0_12px_rgba(14,165,233,0.2)]',
-    text: 'text-sky-400',
-    dot: 'bg-sky-400 shadow-[0_0_8px_rgba(14,165,233,0.8)]',
+    badgeClass: 'border-sky-500/30 text-sky-300 bg-sky-500/10',
+    dot: 'bg-sky-400',
   },
 };
 
@@ -67,133 +63,125 @@ export const FindingCard: React.FC<FindingCardProps> = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const spotlightColor =
-    finding.severity === 'HIGH'
-      ? 'rgba(239, 68, 68, 0.22)'
-      : finding.severity === 'MEDIUM'
-      ? 'rgba(245, 158, 11, 0.22)'
-      : 'rgba(99, 102, 241, 0.22)';
-
   return (
     <SpotlightCard
       data-testid={`finding-card-${finding.id}`}
-      spotlightColor={spotlightColor}
-      className="finding-card-item p-6 transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/30 space-y-4 rounded-3xl"
+      spotlightColor="rgba(99, 102, 241, 0.12)"
+      className="finding-card-item p-5 transition-all duration-200 rounded-xl border border-zinc-800 bg-[#090C10] hover:border-zinc-700 space-y-3.5"
     >
       {/* Header: Location & Badges */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center space-x-2 text-xs font-mono font-semibold text-slate-200 bg-white/[0.04] px-3.5 py-1.5 rounded-xl border border-white/[0.08] shadow-inner">
-          <FileCode className="w-4 h-4 text-indigo-400 flex-shrink-0" />
-          <span className="truncate max-w-xs">{finding.file}</span>
+      <div className="flex flex-wrap items-center justify-between gap-2.5">
+        <div className="flex items-center space-x-2 text-xs font-mono text-zinc-200 bg-zinc-900 px-3 py-1.5 rounded-md border border-zinc-800">
+          <FileCode className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" />
+          <span className="font-semibold text-white">{finding.file}</span>
           {finding.line !== null && (
             <span className="text-indigo-400 font-bold">:{finding.line}</span>
           )}
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 font-mono text-xs">
           {/* Category Badge */}
-          <span className="flex items-center space-x-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-white/[0.04] text-slate-300 border border-white/[0.08]">
+          <span className="flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-zinc-900 text-zinc-300 border border-zinc-800 text-[11px]">
             {categoryIcons[finding.category]}
             <span>{finding.category}</span>
           </span>
 
           {/* Severity Badge */}
           <span
-            className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full border ${sev.bg}`}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[11px] font-semibold ${sev.badgeClass}`}
           >
-            <span className={`w-2 h-2 rounded-full ${sev.dot}`} />
+            <span className={`w-1.5 h-1.5 rounded-full ${sev.dot}`} />
             <span>{sev.label}</span>
           </span>
         </div>
       </div>
 
       {/* Finding Message */}
-      <div className="space-y-1.5">
-        <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-          Identified Risk
+      <div className="space-y-1">
+        <h4 className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">
+          Identified Risk Analysis
         </h4>
-        <p className="text-slate-100 text-sm leading-relaxed font-normal">
+        <p className="text-zinc-200 text-xs sm:text-sm leading-relaxed font-normal">
           {finding.message}
         </p>
       </div>
 
-      {/* Suggested Fix Code Box */}
-      <div className="bg-[#05070C] rounded-2xl border border-slate-800/90 overflow-hidden shadow-2xl">
-        <div className="flex items-center justify-between px-3.5 py-2.5 bg-slate-900/90 border-b border-slate-800/90 text-xs">
-          <div className="flex items-center space-x-2 text-indigo-400 font-semibold text-[11px] uppercase tracking-wider">
+      {/* Suggested Fix Code Box with VS Code aesthetics */}
+      <div className="bg-[#05070C] rounded-lg border border-zinc-800 overflow-hidden font-mono">
+        <div className="flex items-center justify-between px-3.5 py-2 bg-[#0D1117] border-b border-zinc-800 text-[11px]">
+          <div className="flex items-center space-x-1.5 text-emerald-400 font-semibold">
             <Check className="w-3.5 h-3.5" />
             <span>Suggested Remediation</span>
           </div>
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 text-[11px] font-mono text-slate-400 hover:text-white px-2.5 py-1 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] transition"
+            className="flex items-center gap-1 text-[11px] text-zinc-400 hover:text-white px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 transition"
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <Check className="w-3 h-3 text-emerald-400" />
                 <span className="text-emerald-400 font-semibold">Copied</span>
               </>
             ) : (
               <>
-                <Copy className="w-3.5 h-3.5" />
+                <Copy className="w-3 h-3" />
                 <span>Copy Fix</span>
               </>
             )}
           </button>
         </div>
-        <pre className="p-4 text-xs font-mono text-slate-200 whitespace-pre-wrap leading-relaxed overflow-x-auto selection:bg-indigo-600">
-          {finding.suggestion}
-        </pre>
+        <div className="p-3.5 text-xs text-emerald-300 whitespace-pre-wrap leading-relaxed overflow-x-auto selection:bg-indigo-900 selection:text-white">
+          <code>{finding.suggestion}</code>
+        </div>
       </div>
 
       {/* Feedback Verification Actions */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/[0.08]">
-        <div className="text-xs text-slate-400 flex items-center space-x-2">
-          <span className="font-medium text-slate-500">Verification Status:</span>
+      <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2.5 border-t border-zinc-800 text-xs font-mono">
+        <div className="text-[11px] text-zinc-400 flex items-center space-x-2">
+          <span className="text-zinc-500">Telemetry Status:</span>
           {finding.feedback === 'ACCEPTED' && (
-            <span className="inline-flex items-center gap-1.5 text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-bold shadow-[0_0_10px_rgba(16,185,129,0.25)]">
-              <Check className="w-3.5 h-3.5" />
+            <span className="inline-flex items-center gap-1 text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded font-semibold">
+              <Check className="w-3 h-3" />
               <span>Accepted (True Positive)</span>
             </span>
           )}
           {finding.feedback === 'FALSE_POSITIVE' && (
-            <span className="inline-flex items-center gap-1.5 text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 rounded-full font-bold shadow-[0_0_10px_rgba(245,158,11,0.25)]">
-              <AlertTriangle className="w-3.5 h-3.5" />
-              <span>Marked False Positive</span>
+            <span className="inline-flex items-center gap-1 text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded font-semibold">
+              <span>False Positive (Suppressed)</span>
             </span>
           )}
-          {finding.feedback === 'PENDING' && (
-            <span className="text-slate-500 italic">Awaiting Engineer Verification</span>
+          {(!finding.feedback || finding.feedback === 'PENDING') && (
+            <span className="text-zinc-500">Unreviewed by engineer</span>
           )}
         </div>
 
         {onFeedback && (
           <div className="flex items-center space-x-2">
             <button
+              data-testid={`accept-btn-${finding.id}`}
               onClick={() => onFeedback(finding.id, 'ACCEPTED')}
               disabled={isUpdating || finding.feedback === 'ACCEPTED'}
-              data-testid={`accept-btn-${finding.id}`}
-              className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex items-center space-x-1.5 px-3 py-1 rounded text-xs transition ${
                 finding.feedback === 'ACCEPTED'
-                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-default shadow-[0_0_15px_rgba(16,185,129,0.25)]'
-                  : 'bg-white/[0.04] text-slate-300 hover:bg-emerald-500/15 hover:text-emerald-300 hover:border-emerald-500/40 border border-white/[0.08] active:scale-95'
-              }`}
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold cursor-default'
+                  : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 hover:border-zinc-700'
+              } disabled:opacity-50`}
             >
-              <ThumbsUp className="w-3.5 h-3.5" />
-              <span>Accept</span>
+              <ThumbsUp className="w-3 h-3 text-emerald-400" />
+              <span>Accept Fix</span>
             </button>
 
             <button
+              data-testid={`fp-btn-${finding.id}`}
               onClick={() => onFeedback(finding.id, 'FALSE_POSITIVE')}
               disabled={isUpdating || finding.feedback === 'FALSE_POSITIVE'}
-              data-testid={`fp-btn-${finding.id}`}
-              className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex items-center space-x-1.5 px-3 py-1 rounded text-xs transition ${
                 finding.feedback === 'FALSE_POSITIVE'
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 cursor-default shadow-[0_0_15px_rgba(245,158,11,0.25)]'
-                  : 'bg-white/[0.04] text-slate-300 hover:bg-rose-500/15 hover:text-rose-300 hover:border-rose-500/40 border border-white/[0.08] active:scale-95'
-              }`}
+                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold cursor-default'
+                  : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 hover:border-zinc-700'
+              } disabled:opacity-50`}
             >
-              <ThumbsDown className="w-3.5 h-3.5" />
+              <ThumbsDown className="w-3 h-3 text-amber-400" />
               <span>False Positive</span>
             </button>
           </div>

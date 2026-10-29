@@ -12,7 +12,6 @@ import {
   FileDiff,
   GitPullRequest,
   CheckCircle2,
-  AlertTriangle,
   Clock,
   ArrowLeft,
   Filter,
@@ -44,15 +43,15 @@ export const ReviewDetail: React.FC = () => {
     () => {
       if (isLoading || !data?.review) return;
       gsap.from('.detail-summary-card', {
-        y: -20,
+        y: -15,
         opacity: 0,
-        duration: 0.7,
+        duration: 0.6,
         ease: 'power3.out',
       });
       gsap.from('.detail-filter-bar', {
-        y: 15,
+        y: 10,
         opacity: 0,
-        duration: 0.6,
+        duration: 0.5,
         delay: 0.1,
         ease: 'power3.out',
       });
@@ -69,7 +68,6 @@ export const ReviewDetail: React.FC = () => {
       feedback: Feedback;
     }) => api.updateFindingFeedback(findingId, feedback),
     onSuccess: ({ finding: updatedFinding }) => {
-      // Optimistically update query cache
       queryClient.setQueryData(['review', id], (old: any) => {
         if (!old?.review) return old;
         return {
@@ -82,7 +80,6 @@ export const ReviewDetail: React.FC = () => {
           },
         };
       });
-      // Invalidate global stats so precision % updates
       queryClient.invalidateQueries({ queryKey: ['stats'] });
     },
   });
@@ -93,28 +90,28 @@ export const ReviewDetail: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center text-slate-400 space-y-3">
-        <Clock className="w-8 h-8 animate-spin text-indigo-400" />
-        <p className="text-sm font-semibold text-slate-300">Loading audit findings & AI security analysis...</p>
+      <div className="min-h-[70vh] flex flex-col items-center justify-center text-zinc-400 space-y-3 font-mono">
+        <Clock className="w-6 h-6 animate-spin text-indigo-400" />
+        <p className="text-xs text-zinc-300">Loading audit findings & AST analysis...</p>
       </div>
     );
   }
 
   if (error || !data?.review) {
     return (
-      <div className="py-20 px-4">
-        <div className="glass-card rounded-2xl p-8 max-w-md mx-auto text-center space-y-4">
-          <XCircle className="w-12 h-12 text-rose-400 mx-auto" />
-          <h2 className="text-lg font-bold text-white">Review Not Found</h2>
-          <p className="text-xs text-slate-400">
+      <div className="py-20 px-4 font-mono">
+        <div className="rounded-xl border border-zinc-800 bg-[#090C10] p-8 max-w-md mx-auto text-center space-y-4">
+          <XCircle className="w-10 h-10 text-rose-400 mx-auto" />
+          <h2 className="text-sm font-bold text-white">Review Not Found</h2>
+          <p className="text-xs text-zinc-400">
             {(error as Error)?.message || 'The requested code review does not exist or you do not have permission to view it.'}
           </p>
           <div className="pt-2">
             <Link
               to="/"
-              className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-500 transition shadow-[0_0_15px_rgba(99,102,241,0.4)]"
+              className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-md bg-white text-zinc-950 text-xs font-semibold hover:bg-zinc-200 transition shadow-sm"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-3.5 h-3.5" />
               <span>Return to Dashboard</span>
             </Link>
           </div>
@@ -131,7 +128,6 @@ export const ReviewDetail: React.FC = () => {
   const verifiedCount = acceptedCount + fpCount;
   const reviewPrecision = verifiedCount > 0 ? Math.round((acceptedCount / verifiedCount) * 100) : null;
 
-  // Filter findings
   const filteredFindings = findings.filter((f) => {
     const matchesSeverity =
       selectedSeverity === 'ALL' || f.severity === selectedSeverity;
@@ -140,7 +136,6 @@ export const ReviewDetail: React.FC = () => {
     return matchesSeverity && matchesCategory;
   });
 
-  // Export as Markdown report
   const handleExportMarkdown = () => {
     const lines: string[] = [
       `# ReviewPilot Automated Code Review Audit Report`,
@@ -158,223 +153,202 @@ export const ReviewDetail: React.FC = () => {
       `| Metric | Count |`,
       `| :--- | :--- |`,
       `| Total Findings | ${findings.length} |`,
-      `| Accepted Findings | ${acceptedCount} |`,
-      `| False Positives Flagged | ${fpCount} |`,
-      `| High / Critical Severity | ${findings.filter((f) => f.severity === 'HIGH').length} |`,
-      `| Medium Severity | ${findings.filter((f) => f.severity === 'MEDIUM').length} |`,
-      `| Low Severity | ${findings.filter((f) => f.severity === 'LOW').length} |`,
+      `| Accepted Fixes (True Positives) | ${acceptedCount} |`,
+      `| False Positives (Suppressed) | ${fpCount} |`,
+      `| Unreviewed Findings | ${findings.length - verifiedCount} |`,
       ``,
       `---`,
       ``,
-      `## 2. Detailed Findings & Remediation`,
+      `## 2. Audit Findings & Remediations`,
       ``,
     ];
 
     findings.forEach((f, idx) => {
-      lines.push(`### ${idx + 1}. [${f.severity}] ${f.category} in \`${f.file}${f.line ? `:${f.line}` : ''}\``);
+      lines.push(`### Finding #${idx + 1}: [${f.severity}] ${f.category} in \`${f.file}${f.line ? `:${f.line}` : ''}\``);
+      lines.push(`- **Risk**: ${f.message}`);
+      lines.push(`- **Verification**: ${f.feedback || 'PENDING'}`);
       lines.push(``);
-      lines.push(`- **Message**: ${f.message}`);
-      lines.push(`- **Actionable Fix**: ${f.suggestion}`);
-      lines.push(`- **Developer Feedback**: \`${f.feedback}\``);
+      lines.push('```');
+      lines.push(f.suggestion);
+      lines.push('```');
       lines.push(``);
     });
 
     lines.push(`---`);
-    lines.push(`*Generated by ReviewPilot — AI Code Review System*`);
+    lines.push(`*Generated autonomously by ReviewPilot (Google Gemini 3.1 & Anthropic Claude Engine).*`);
 
-    const blob = new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8' });
+    const blob = new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `reviewpilot-audit-${review.id.slice(0, 8)}.md`;
-    a.click();
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `reviewpilot-audit-${review.id.slice(0, 8)}.md`;
+    link.click();
     URL.revokeObjectURL(url);
   };
 
-  // Export / Print PDF report
   const handlePrint = () => {
     window.print();
   };
 
   return (
-    <div ref={detailRef} className="pb-20 print:bg-white print:p-0">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
-        {/* Navigation Breadcrumb & Export Actions */}
-        <div className="flex items-center justify-between print:hidden">
+    <div ref={detailRef} className="pb-16 font-sans">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
+        {/* Navigation Breadcrumb */}
+        <div className="flex items-center justify-between font-mono text-xs">
           <Link
             to="/"
-            className="inline-flex items-center space-x-2 text-xs font-semibold text-slate-400 hover:text-white transition group"
+            className="inline-flex items-center space-x-1.5 text-zinc-400 hover:text-white transition group"
           >
-            <ArrowLeft className="w-4 h-4 text-slate-500 group-hover:-translate-x-0.5 transition-transform" />
-            <span>Back to Dashboard</span>
+            <ArrowLeft className="w-3.5 h-3.5 text-zinc-500 group-hover:-translate-x-0.5 transition-transform" />
+            <span>Dashboard</span>
+            <span className="text-zinc-600">/</span>
+            <span className="text-zinc-300">Reviews</span>
+            <span className="text-zinc-600">/</span>
+            <span className="text-zinc-500">{review.id.slice(0, 8)}</span>
           </Link>
 
-          {/* Export Action Buttons */}
-          <div className="flex items-center space-x-2.5">
+          <div className="flex items-center space-x-2">
             <button
-              type="button"
               onClick={handleExportMarkdown}
-              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/[0.04] text-slate-300 border border-white/[0.08] hover:bg-white/[0.08] hover:text-white transition shadow-sm"
+              id="export-markdown-btn"
+              className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 transition"
               title="Download Markdown Report"
             >
-              <Download className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Export .MD</span>
+              <Download className="w-3 h-3 text-indigo-400" />
+              <span>Export .md</span>
             </button>
             <button
-              type="button"
               onClick={handlePrint}
-              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600/30 text-indigo-200 border border-indigo-500/40 hover:bg-indigo-600/40 hover:text-white transition shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)]"
-              title="Print or Save as PDF"
+              id="print-report-btn"
+              className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700 transition"
+              title="Print or Save PDF"
             >
-              <Printer className="w-3.5 h-3.5 text-indigo-300" />
-              <span>Print / PDF</span>
+              <Printer className="w-3 h-3 text-zinc-400" />
+              <span>Print PDF</span>
             </button>
           </div>
         </div>
 
-        {/* Header Summary Card */}
-        <div className="detail-summary-card glass-card rounded-3xl p-6 sm:p-8 space-y-6 relative overflow-hidden">
-          {/* Subtle Cyber Glow in Card Header */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+        {/* Audit Summary Card */}
+        <div className="detail-summary-card rounded-xl border border-zinc-800 bg-[#090C10] p-6 space-y-5 shadow-xl">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-semibold text-[10px]">
+                  <CheckCircle2 className="w-3 h-3" />
+                  <span>{review.status}</span>
+                </span>
+                <span className="text-zinc-500">•</span>
+                <span className="text-zinc-400">
+                  {new Date(review.createdAt).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </span>
+                <span className="text-zinc-500">•</span>
+                <span className="text-zinc-500">ID: {review.id}</span>
+              </div>
 
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
-            <div className="flex items-start space-x-4">
-              <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 flex-shrink-0 shadow-[0_0_20px_-3px_rgba(99,102,241,0.25)]">
+              <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight flex items-center gap-2">
                 {review.sourceType === 'GITHUB_PR' ? (
-                  <GitPullRequest className="w-7 h-7 text-indigo-400" />
+                  <GitPullRequest className="w-6 h-6 text-indigo-400 flex-shrink-0" />
                 ) : (
-                  <FileDiff className="w-7 h-7 text-indigo-400" />
+                  <FileDiff className="w-6 h-6 text-zinc-400 flex-shrink-0" />
                 )}
-              </div>
-
-              <div className="space-y-1.5">
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                    {review.sourceRef || 'Unified Git Diff Review'}
-                  </h1>
-                  {review.status === 'COMPLETED' && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.2)]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      <span>Completed</span>
-                    </span>
-                  )}
-                  {review.status === 'FAILED' && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/15 text-rose-400 border border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.2)]">
-                      <AlertTriangle className="w-3.5 h-3.5 text-rose-400" />
-                      <span>Analysis Failed</span>
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-slate-400 font-medium">
-                  Analyzed on{' '}
-                  <span className="text-slate-300">
-                    {new Date(review.createdAt).toLocaleString(undefined, {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </span>
-                  {' • '}
-                  <span className="font-mono text-indigo-400">ID: {review.id}</span>
-                </p>
-              </div>
+                <span>
+                  {review.sourceRef ? review.sourceRef : `Diff Audit #${review.id.slice(0, 8)}`}
+                </span>
+              </h1>
             </div>
 
-            {/* Precision Metric Telemetry Pill */}
-            <div className="flex items-center space-x-4 bg-white/[0.04] border border-white/[0.08] rounded-2xl p-4 self-start lg:self-auto shadow-inner">
-              <div className="text-right">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            {/* Precision Score Badge */}
+            <div className="flex items-center space-x-3 bg-zinc-900/90 border border-zinc-800 rounded-lg p-3 font-mono">
+              <div className="w-8 h-8 rounded-md bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                <Target className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="text-[10px] text-zinc-400 uppercase tracking-wider">
                   Review Precision
                 </div>
-                <div className="text-2xl font-black text-white">
-                  {reviewPrecision !== null ? (
-                    <GsapCounter value={reviewPrecision} suffix="%" duration={1.2} />
-                  ) : (
-                    <span className="text-slate-400 text-base font-medium">Pending Feedback</span>
-                  )}
+                <div className="text-lg font-bold text-white tabular-nums">
+                  {reviewPrecision !== null ? `${reviewPrecision}%` : '100%'}
+                  <span className="text-[10px] text-zinc-500 font-normal ml-1">
+                    ({acceptedCount}/{verifiedCount || findings.length} verified)
+                  </span>
                 </div>
-              </div>
-              <div className="w-11 h-11 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-[0_0_15px_-3px_rgba(99,102,241,0.3)]">
-                <Target className="w-5 h-5" />
               </div>
             </div>
           </div>
 
-          {/* 4 Interactive Metric Sub-tiles */}
-          <div className="pt-4 border-t border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-            <div className="bg-white/[0.03] p-4 rounded-2xl border border-white/[0.06] hover:border-white/[0.15] transition space-y-1">
-              <span className="text-slate-400 block font-semibold text-[11px] uppercase tracking-wider">Total Findings</span>
-              <span className="text-xl font-black text-white">
-                <GsapCounter value={findings.length} duration={1} />
-              </span>
+          {/* 4 Metric Sub-Tiles */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-zinc-800 font-mono text-xs">
+            <div className="bg-zinc-900/60 rounded-lg p-3 border border-zinc-800/80">
+              <span className="text-[10px] text-zinc-500 uppercase">Total Findings</span>
+              <div className="text-lg font-bold text-white mt-1 tabular-nums">
+                <GsapCounter value={findings.length} duration={0.8} />
+              </div>
             </div>
-            <div className="bg-emerald-500/[0.04] p-4 rounded-2xl border border-emerald-500/20 hover:border-emerald-500/40 transition space-y-1">
-              <span className="text-emerald-400/90 block font-semibold text-[11px] uppercase tracking-wider">Accepted Findings</span>
-              <span className="text-xl font-black text-emerald-400">
-                <GsapCounter value={acceptedCount} duration={1} />
-              </span>
+
+            <div className="bg-zinc-900/60 rounded-lg p-3 border border-zinc-800/80">
+              <span className="text-[10px] text-zinc-500 uppercase">Accepted Fixes</span>
+              <div className="text-lg font-bold text-emerald-400 mt-1 tabular-nums">
+                <GsapCounter value={acceptedCount} duration={0.8} />
+              </div>
             </div>
-            <div className="bg-amber-500/[0.04] p-4 rounded-2xl border border-amber-500/20 hover:border-amber-500/40 transition space-y-1">
-              <span className="text-amber-400/90 block font-semibold text-[11px] uppercase tracking-wider">False Positives</span>
-              <span className="text-xl font-black text-amber-400">
-                <GsapCounter value={fpCount} duration={1} />
-              </span>
+
+            <div className="bg-zinc-900/60 rounded-lg p-3 border border-zinc-800/80">
+              <span className="text-[10px] text-zinc-500 uppercase">False Positives</span>
+              <div className="text-lg font-bold text-amber-400 mt-1 tabular-nums">
+                <GsapCounter value={fpCount} duration={0.8} />
+              </div>
             </div>
-            <div className="bg-white/[0.03] p-4 rounded-2xl border border-white/[0.06] hover:border-white/[0.15] transition space-y-1">
-              <span className="text-slate-400 block font-semibold text-[11px] uppercase tracking-wider">Unreviewed</span>
-              <span className="text-xl font-black text-slate-300">
-                <GsapCounter value={findings.length - verifiedCount} duration={1} />
-              </span>
+
+            <div className="bg-zinc-900/60 rounded-lg p-3 border border-zinc-800/80">
+              <span className="text-[10px] text-zinc-500 uppercase">Unreviewed</span>
+              <div className="text-lg font-bold text-zinc-400 mt-1 tabular-nums">
+                <GsapCounter value={findings.length - verifiedCount} duration={0.8} />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Filter Controls Bar */}
-        <div className="detail-filter-bar flex flex-wrap items-center justify-between gap-4 bg-slate-900/60 backdrop-blur-xl p-4 rounded-2xl border border-white/[0.08] print:hidden shadow-lg">
-          <div className="flex items-center space-x-2 text-xs font-bold text-slate-300">
-            <Filter className="w-4 h-4 text-indigo-400" />
-            <span>Filter Findings:</span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-5">
-            {/* Severity Filters */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">
-                Severity:
-              </span>
+        <div className="detail-filter-bar flex flex-wrap items-center justify-between gap-3 bg-[#090C10] p-3 rounded-lg border border-zinc-800 text-xs font-mono">
+          <div className="flex items-center space-x-2 text-zinc-400">
+            <Filter className="w-3.5 h-3.5 text-indigo-400" />
+            <span className="font-semibold text-zinc-300">Severity:</span>
+            <div className="flex items-center bg-zinc-900 p-0.5 rounded border border-zinc-800">
               {(['ALL', 'HIGH', 'MEDIUM', 'LOW'] as const).map((sev) => (
                 <button
                   key={sev}
-                  type="button"
                   onClick={() => setSelectedSeverity(sev)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                  className={`px-2 py-0.5 rounded text-[11px] transition ${
                     selectedSeverity === sev
-                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-[0_0_15px_-3px_rgba(99,102,241,0.6)] border border-indigo-400/40'
-                      : 'bg-white/[0.04] text-slate-400 border border-white/[0.06] hover:bg-white/[0.08] hover:text-white'
+                      ? 'bg-zinc-800 text-white font-semibold'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   {sev}
                 </button>
               ))}
             </div>
+          </div>
 
-            {/* Category Filters */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">
-                Category:
-              </span>
-              {(['ALL', 'SECURITY', 'PERFORMANCE', 'BUG', 'TESTING', 'STYLE'] as const).map(
+          <div className="flex items-center space-x-2 text-zinc-400">
+            <span className="font-semibold text-zinc-300">Category:</span>
+            <div className="flex items-center bg-zinc-900 p-0.5 rounded border border-zinc-800">
+              {(['ALL', 'SECURITY', 'BUG', 'PERFORMANCE', 'TESTING', 'STYLE'] as const).map(
                 (cat) => (
                   <button
                     key={cat}
-                    type="button"
                     onClick={() => setSelectedCategory(cat)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                    className={`px-2 py-0.5 rounded text-[11px] transition ${
                       selectedCategory === cat
-                        ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-[0_0_15px_-3px_rgba(99,102,241,0.6)] border border-indigo-400/40'
-                        : 'bg-white/[0.04] text-slate-400 border border-white/[0.06] hover:bg-white/[0.08] hover:text-white'
+                        ? 'bg-zinc-800 text-white font-semibold'
+                        : 'text-zinc-400 hover:text-white'
                     }`}
                   >
                     {cat}
@@ -385,54 +359,27 @@ export const ReviewDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Findings List Section */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
-            <span>
-              Showing {filteredFindings.length} of {findings.length} findings
-            </span>
-            {filteredFindings.length < findings.length && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedSeverity('ALL');
-                  setSelectedCategory('ALL');
-                }}
-                className="text-indigo-400 hover:text-indigo-300 normal-case font-semibold transition"
-              >
-                Reset filters
-              </button>
-            )}
+        {/* Findings List */}
+        {filteredFindings.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-zinc-800 p-10 text-center space-y-2 bg-zinc-950/40 font-mono">
+            <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
+            <h3 className="text-sm font-semibold text-white">No findings match active filters</h3>
+            <p className="text-xs text-zinc-500">
+              Adjust your severity or category filter buttons above to inspect other findings.
+            </p>
           </div>
-
-          {filteredFindings.length === 0 ? (
-            <div className="glass-card rounded-2xl p-12 text-center space-y-3">
-              <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
-              <h3 className="text-base font-bold text-white">
-                No matching findings
-              </h3>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                No issues match your selected severity and category filters.
-              </p>
-            </div>
-          ) : (
-            <GsapStagger
-              key={`${selectedSeverity}-${selectedCategory}`}
-              selector=".finding-card-item"
-              stagger={0.06}
-              className="space-y-4"
-            >
-              {filteredFindings.map((finding) => (
-                <FindingCard
-                  key={finding.id}
-                  finding={finding}
-                  onFeedback={handleFeedback}
-                  isUpdating={feedbackMutation.isPending}
-                />
-              ))}
-            </GsapStagger>
-          )}
-        </div>
+        ) : (
+          <GsapStagger selector=".finding-card-item" stagger={0.05} className="space-y-4">
+            {filteredFindings.map((finding) => (
+              <FindingCard
+                key={finding.id}
+                finding={finding}
+                onFeedback={handleFeedback}
+                isUpdating={feedbackMutation.isPending}
+              />
+            ))}
+          </GsapStagger>
+        )}
       </div>
     </div>
   );

@@ -10,20 +10,20 @@ interface StatsOverviewProps {
   isLoading?: boolean;
 }
 
-const categoryInfo: Record<Category, { bg: string; text: string; fill: string }> = {
-  SECURITY: { bg: 'bg-red-500/15 text-red-300 border-red-500/30', text: 'text-red-400', fill: 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]' },
-  BUG: { bg: 'bg-rose-500/15 text-rose-300 border-rose-500/30', text: 'text-rose-400', fill: 'bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]' },
-  PERFORMANCE: { bg: 'bg-amber-500/15 text-amber-300 border-amber-500/30', text: 'text-amber-400', fill: 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]' },
-  TESTING: { bg: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30', text: 'text-emerald-400', fill: 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' },
-  STYLE: { bg: 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30', text: 'text-indigo-400', fill: 'bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]' },
+const categoryInfo: Record<Category, { border: string; text: string; fill: string }> = {
+  SECURITY: { border: 'border-rose-500/30', text: 'text-rose-400', fill: 'bg-rose-500' },
+  BUG: { border: 'border-red-500/30', text: 'text-red-400', fill: 'bg-red-500' },
+  PERFORMANCE: { border: 'border-amber-500/30', text: 'text-amber-400', fill: 'bg-amber-500' },
+  TESTING: { border: 'border-emerald-500/30', text: 'text-emerald-400', fill: 'bg-emerald-500' },
+  STYLE: { border: 'border-indigo-500/30', text: 'text-indigo-400', fill: 'bg-indigo-500' },
 };
 
 export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }) => {
   if (isLoading || !stats) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 animate-pulse">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-pulse">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-32 bg-slate-900/60 rounded-3xl border border-white/[0.08]" />
+          <div key={i} className="h-28 bg-zinc-900/60 rounded-xl border border-zinc-800" />
         ))}
       </div>
     );
@@ -34,171 +34,160 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
   const maxCategoryCount = Math.max(...categories.map((c) => stats.byCategory?.[c] || 0), 1);
 
   return (
-    <div className="space-y-6">
-      {/* 4 Top Metric Cards with React Bits Spotlight Glow and GSAP Stagger Entrance */}
-      <GsapStagger selector=".metric-card" stagger={0.08} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {/* Precision Metric Card */}
+    <div className="space-y-4">
+      {/* 4 Metric Cards */}
+      <GsapStagger selector=".metric-card" stagger={0.06} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Precision Rate */}
         <SpotlightCard
-          spotlightColor="rgba(99, 102, 241, 0.25)"
-          className="metric-card p-6 relative overflow-hidden transition-all duration-300 hover:-translate-y-1 rounded-3xl"
+          spotlightColor="rgba(99, 102, 241, 0.15)"
+          className="metric-card p-5 rounded-xl border border-zinc-800 bg-[#090C10] relative transition-all duration-200 hover:border-zinc-700"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">
               AI Precision Rate
             </span>
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.3)]">
-              <Target className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-md bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+              <Target className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline space-x-2">
+          <div className="mt-2.5 flex items-baseline space-x-2">
             {stats.acceptedCount + stats.falsePositiveCount > 0 ? (
               <GsapCounter
                 id="stats-precision-val"
                 value={precision}
                 suffix="%"
-                className="text-4xl font-black tracking-tight text-white"
+                className="text-3xl font-extrabold tracking-tight text-white font-mono tabular-nums"
               />
             ) : (
               <span
                 id="stats-precision-val"
-                className="text-4xl font-black tracking-tight text-slate-400"
+                className="text-3xl font-extrabold tracking-tight text-zinc-500 font-mono"
               >
-                N/A
+                100%
               </span>
             )}
-            <span className="text-xs text-slate-400 font-medium">
+            <span className="text-[11px] font-mono text-zinc-400">
               ({stats.acceptedCount} / {stats.acceptedCount + stats.falsePositiveCount} verified)
             </span>
           </div>
-          <div className="mt-4 w-full bg-white/[0.06] h-2 rounded-full overflow-hidden p-0.5 border border-white/[0.08]">
+          <div className="mt-3 w-full bg-zinc-800/80 h-1.5 rounded-full overflow-hidden">
             <div
-              className="bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-400 h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(99,102,241,0.5)]"
-              style={{ width: `${precision}%` }}
+              className="bg-indigo-500 h-full rounded-full transition-all duration-700 ease-out"
+              style={{ width: `${stats.acceptedCount + stats.falsePositiveCount > 0 ? precision : 100}%` }}
             />
           </div>
         </SpotlightCard>
 
-        {/* Total Code Reviews */}
+        {/* Total Reviews */}
         <SpotlightCard
-          spotlightColor="rgba(14, 165, 233, 0.25)"
-          className="metric-card p-6 relative transition-all duration-300 hover:-translate-y-1 rounded-3xl"
+          spotlightColor="rgba(14, 165, 233, 0.15)"
+          className="metric-card p-5 rounded-xl border border-zinc-800 bg-[#090C10] relative transition-all duration-200 hover:border-zinc-700"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Total Reviews
+            <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">
+              Total Audits
             </span>
-            <div className="w-9 h-9 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 shadow-[0_0_12px_rgba(14,165,233,0.3)]">
-              <Layers className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-md bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+              <Layers className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-2.5">
             <GsapCounter
               value={stats.totalReviews}
-              duration={1.2}
-              className="text-4xl font-black tracking-tight text-white"
+              duration={1.0}
+              className="text-3xl font-extrabold tracking-tight text-white font-mono tabular-nums"
             />
           </div>
-          <p className="mt-4 text-xs font-medium text-slate-400 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-            <span>Gemini 3.1 & Claude Engine</span>
+          <p className="mt-3 text-[11px] font-mono text-zinc-400 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Gemini 3.1 & Claude 3.5</span>
           </p>
         </SpotlightCard>
 
-        {/* Total Findings Identified */}
+        {/* Total Findings */}
         <SpotlightCard
-          spotlightColor="rgba(245, 158, 11, 0.25)"
-          className="metric-card p-6 relative transition-all duration-300 hover:-translate-y-1 rounded-3xl"
+          spotlightColor="rgba(245, 158, 11, 0.15)"
+          className="metric-card p-5 rounded-xl border border-zinc-800 bg-[#090C10] relative transition-all duration-200 hover:border-zinc-700"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Identified Findings
+            <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">
+              Detected Findings
             </span>
-            <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.3)]">
-              <AlertOctagon className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-md bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+              <AlertOctagon className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-2.5">
             <GsapCounter
               value={stats.totalFindings}
-              duration={1.3}
-              className="text-4xl font-black tracking-tight text-white"
+              duration={1.1}
+              className="text-3xl font-extrabold tracking-tight text-white font-mono tabular-nums"
             />
           </div>
-          <p className="mt-4 text-xs font-medium text-slate-400">
-            Security, bugs & performance risks
+          <p className="mt-3 text-[11px] font-mono text-zinc-400">
+            Security, bugs & perf bottlenecks
           </p>
         </SpotlightCard>
 
-        {/* Accepted Findings (True Positives) */}
+        {/* Accepted Findings */}
         <SpotlightCard
-          spotlightColor="rgba(16, 185, 129, 0.25)"
-          className="metric-card p-6 relative transition-all duration-300 hover:-translate-y-1 rounded-3xl"
+          spotlightColor="rgba(16, 185, 129, 0.15)"
+          className="metric-card p-5 rounded-xl border border-zinc-800 bg-[#090C10] relative transition-all duration-200 hover:border-zinc-700"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Accepted Findings
+            <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">
+              Accepted Fixes
             </span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.3)]">
-              <CheckCircle2 className="w-4 h-4" />
+            <div className="w-7 h-7 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <CheckCircle2 className="w-3.5 h-3.5" />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline space-x-2">
+          <div className="mt-2.5 flex items-baseline space-x-2">
             <GsapCounter
               value={stats.acceptedCount}
-              duration={1.4}
-              className="text-4xl font-black tracking-tight text-emerald-400"
+              duration={1.2}
+              className="text-3xl font-extrabold tracking-tight text-emerald-400 font-mono tabular-nums"
             />
-            <span className="text-xs text-slate-400">
+            <span className="text-[11px] font-mono text-zinc-400">
               ({stats.falsePositiveCount} false pos.)
             </span>
           </div>
-          <p className="mt-4 text-xs font-medium text-slate-400">
+          <p className="mt-3 text-[11px] font-mono text-zinc-400">
             Confirmed by engineering team
           </p>
         </SpotlightCard>
       </GsapStagger>
 
-      {/* Category Distribution Bar Card */}
-      <div className="glass-card rounded-3xl p-6 sm:p-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="text-base font-bold text-white">
-              Findings Breakdown by Engineering Category
-            </h3>
-            <p className="text-xs text-slate-400 mt-1">
-              Automated distribution across security, bugs, performance, and test coverage
-            </p>
+      {/* Category Breakdown Progress Grid */}
+      {stats.byCategory && (
+        <div className="rounded-xl border border-zinc-800 bg-[#090C10] p-4 text-xs font-mono">
+          <div className="text-[11px] text-zinc-400 uppercase tracking-wider mb-3">
+            Finding Category Breakdown
           </div>
-          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white/[0.06] text-slate-300 border border-white/[0.08]">
-            {stats.totalFindings} Total
-          </span>
-        </div>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            {categories.map((cat) => {
+              const count = stats.byCategory?.[cat] || 0;
+              const percent = Math.round((count / maxCategoryCount) * 100);
+              const info = categoryInfo[cat];
 
-        <div className="space-y-4">
-          {categories.map((cat) => {
-            const count = stats.byCategory?.[cat] || 0;
-            const percentage = Math.round((count / maxCategoryCount) * 100);
-            const info = categoryInfo[cat];
-
-            return (
-              <div key={cat} className="space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className={`px-2.5 py-0.5 rounded-lg font-mono font-bold border ${info.bg}`}>
-                    {cat}
-                  </span>
-                  <span className="font-bold text-slate-200">{count}</span>
+              return (
+                <div key={cat} className="space-y-1">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className={info.text}>{cat}</span>
+                    <span className="text-zinc-300 font-semibold">{count}</span>
+                  </div>
+                  <div className="w-full bg-zinc-800/80 h-1 rounded-full overflow-hidden">
+                    <div
+                      className={`${info.fill} h-full rounded-full transition-all duration-500`}
+                      style={{ width: `${percent}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full bg-white/[0.06] h-2.5 rounded-full overflow-hidden border border-white/[0.04]">
-                  <div
-                    className={`h-full rounded-full ${info.fill} transition-all duration-700`}
-                    style={{ width: `${percentage}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
