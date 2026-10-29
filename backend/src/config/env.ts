@@ -15,7 +15,7 @@ const envSchema = z.object({
   GEMINI_API_KEY: z.string().default(''),
   GEMINI_MODEL: z.string().default('gemini-3.1-flash-lite-preview'),
   RATE_LIMIT_WINDOW_MS: z.string().default('3600000').transform((val) => parseInt(val, 10)),
-  RATE_LIMIT_MAX_REVIEWS: z.string().default('10').transform((val) => parseInt(val, 10)),
+  RATE_LIMIT_MAX_REVIEWS: z.string().default('60').transform((val) => parseInt(val, 10)),
 });
 
 const parseEnv = () => {

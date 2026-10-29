@@ -14,6 +14,9 @@ import { requestLogger } from './middlewares/logger.middleware.js';
 export const createApp = () => {
   const app = express();
 
+  // Trust reverse proxy headers (Cloudflare, Vercel, Nginx)
+  app.set('trust proxy', 1);
+
   // Correlation ID & Structured Access Logging
   app.use(requestLogger);
 

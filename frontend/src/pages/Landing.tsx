@@ -20,6 +20,9 @@ import { SpotlightCard } from '../components/bits/SpotlightCard';
 import { DecryptedText } from '../components/bits/DecryptedText';
 import { ShinyBadge } from '../components/bits/ShinyBadge';
 import { MagnetButton } from '../components/bits/MagnetButton';
+import { ParticlesBackground } from '../components/bits/ParticlesBackground';
+import { TiltedCard } from '../components/bits/TiltedCard';
+import { GsapStagger } from '../components/animations/GsapStagger';
 
 interface SampleDiffPreset {
   id: string;
@@ -124,8 +127,9 @@ export const Landing: React.FC = () => {
   return (
     <div className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 overflow-hidden">
       {/* ---------------- 1. HERO SECTION ---------------- */}
-      <section className="relative pt-12 pb-20 md:pt-20 md:pb-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden">
+        <ParticlesBackground particleCount={45} className="opacity-45" />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto space-y-6">
             {/* Shiny Pill Badge from React Bits */}
             <div className="flex justify-center">
@@ -277,8 +281,9 @@ export const Landing: React.FC = () => {
             ))}
           </div>
 
-          {/* IDE Container Card */}
-          <div className="bg-slate-950 rounded-2xl shadow-2xl border border-slate-800 overflow-hidden text-slate-200">
+          {/* IDE Container Card with React Bits TiltedCard 3D Hover */}
+          <TiltedCard maxRotation={2.5} scale={1.005}>
+            <div className="bg-slate-950 rounded-2xl shadow-2xl border border-slate-800 overflow-hidden text-slate-200">
             {/* Window Header */}
             <div className="flex items-center justify-between px-4 py-3 bg-slate-900/90 border-b border-slate-800">
               <div className="flex items-center space-x-2">
@@ -381,8 +386,9 @@ export const Landing: React.FC = () => {
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </TiltedCard>
+      </div>
+    </section>
 
       {/* ---------------- 4. FEATURE PILLARS ("Boost Your Skills" in Reference) ---------------- */}
       <section id="features" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -398,11 +404,11 @@ export const Landing: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <GsapStagger selector=".pillar-card" stagger={0.12} className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Card 1: Security */}
           <SpotlightCard
             spotlightColor="rgba(239, 68, 68, 0.16)"
-            className="p-7 relative transition-all duration-300 hover:-translate-y-1.5"
+            className="pillar-card p-7 relative transition-all duration-300 hover:-translate-y-1.5"
           >
             <div className="w-12 h-12 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-red-600 mb-5 shadow-sm">
               <ShieldCheck className="w-6 h-6" />
@@ -423,7 +429,7 @@ export const Landing: React.FC = () => {
           {/* Card 2: Performance */}
           <SpotlightCard
             spotlightColor="rgba(245, 158, 11, 0.16)"
-            className="p-7 relative transition-all duration-300 hover:-translate-y-1.5"
+            className="pillar-card p-7 relative transition-all duration-300 hover:-translate-y-1.5"
           >
             <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 mb-5 shadow-sm">
               <Zap className="w-6 h-6" />
@@ -444,7 +450,7 @@ export const Landing: React.FC = () => {
           {/* Card 3: Testing */}
           <SpotlightCard
             spotlightColor="rgba(16, 185, 129, 0.16)"
-            className="p-7 relative transition-all duration-300 hover:-translate-y-1.5"
+            className="pillar-card p-7 relative transition-all duration-300 hover:-translate-y-1.5"
           >
             <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 mb-5 shadow-sm">
               <Layers className="w-6 h-6" />
@@ -461,7 +467,7 @@ export const Landing: React.FC = () => {
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </div>
           </SpotlightCard>
-        </div>
+        </GsapStagger>
       </section>
 
       {/* ---------------- 5. TESTIMONIALS (Reference Match) ---------------- */}

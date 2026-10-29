@@ -78,7 +78,7 @@ export const FindingCard: React.FC<FindingCardProps> = ({
     <SpotlightCard
       data-testid={`finding-card-${finding.id}`}
       spotlightColor={spotlightColor}
-      className="p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 space-y-4"
+      className="finding-card-item p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 space-y-4"
     >
       {/* Header: Location & Badges */}
       <div className="flex flex-wrap items-center justify-between gap-3">

@@ -8,7 +8,9 @@ export const reviewRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: (req) => {
-    return (req as AuthenticatedRequest).user?.userId || req.ip || 'anonymous';
+    const userId = (req as AuthenticatedRequest).user?.userId;
+    const ip = req.ip || 'anonymous';
+    return userId ? `${userId}:${ip}` : ip;
   },
   handler: (_req, res) => {
     res.status(429).json({

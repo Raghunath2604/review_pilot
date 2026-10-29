@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { FindingCard } from '../components/findings/FindingCard';
+import { GsapStagger } from '../components/animations/GsapStagger';
 import { Severity, Category, Feedback, Finding } from '../types';
 import {
   ArrowLeft,
@@ -372,7 +373,7 @@ export const ReviewDetail: React.FC = () => {
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <GsapStagger selector=".finding-card-item" stagger={0.06} className="space-y-4">
               {filteredFindings.map((finding) => (
                 <FindingCard
                   key={finding.id}
@@ -381,7 +382,7 @@ export const ReviewDetail: React.FC = () => {
                   isUpdating={feedbackMutation.isPending}
                 />
               ))}
-            </div>
+            </GsapStagger>
           )}
         </div>
       </div>

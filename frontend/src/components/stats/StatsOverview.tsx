@@ -2,6 +2,7 @@ import React from 'react';
 import { StatsResponse, Category } from '../../types';
 import { Target, CheckCircle2, AlertOctagon, Layers } from 'lucide-react';
 import { SpotlightCard } from '../bits/SpotlightCard';
+import { GsapStagger } from '../animations/GsapStagger';
 
 interface StatsOverviewProps {
   stats?: StatsResponse;
@@ -33,12 +34,12 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
 
   return (
     <div className="space-y-6">
-      {/* 4 Top Metric Cards with React Bits Spotlight Glow */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* 4 Top Metric Cards with React Bits Spotlight Glow and GSAP Stagger Entrance */}
+      <GsapStagger selector=".metric-card" stagger={0.08} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Precision Metric Card */}
         <SpotlightCard
           spotlightColor="rgba(99, 102, 241, 0.18)"
-          className="p-6 relative overflow-hidden transition-all duration-300 hover:-translate-y-1"
+          className="metric-card p-6 relative overflow-hidden transition-all duration-300 hover:-translate-y-1"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -70,7 +71,7 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
         {/* Total Code Reviews */}
         <SpotlightCard
           spotlightColor="rgba(14, 165, 233, 0.18)"
-          className="p-6 relative transition-all duration-300 hover:-translate-y-1"
+          className="metric-card p-6 relative transition-all duration-300 hover:-translate-y-1"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -94,7 +95,7 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
         {/* Total Findings Identified */}
         <SpotlightCard
           spotlightColor="rgba(245, 158, 11, 0.18)"
-          className="p-6 relative transition-all duration-300 hover:-translate-y-1"
+          className="metric-card p-6 relative transition-all duration-300 hover:-translate-y-1"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -117,7 +118,7 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
         {/* Accepted Findings (True Positives) */}
         <SpotlightCard
           spotlightColor="rgba(16, 185, 129, 0.18)"
-          className="p-6 relative transition-all duration-300 hover:-translate-y-1"
+          className="metric-card p-6 relative transition-all duration-300 hover:-translate-y-1"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -139,7 +140,7 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
             Confirmed by engineering team
           </p>
         </SpotlightCard>
-      </div>
+      </GsapStagger>
 
       {/* Category Distribution Bar Card */}
       <div className="glass-card rounded-2xl p-6">

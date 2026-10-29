@@ -18,6 +18,8 @@ import {
 import { ReviewStatus } from '../types';
 import { MagnetButton } from '../components/bits/MagnetButton';
 import { ShinyBadge } from '../components/bits/ShinyBadge';
+import { ParticlesBackground } from '../components/bits/ParticlesBackground';
+import { GsapStagger } from '../components/animations/GsapStagger';
 
 const statusBadge: Record<
   ReviewStatus,
@@ -88,8 +90,9 @@ export const Dashboard: React.FC = () => {
     <div className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
         {/* Top Banner & Action */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-          <div>
+        <div className="relative overflow-hidden flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+          <ParticlesBackground particleCount={25} className="opacity-35" />
+          <div className="relative z-10">
             <div className="mb-2">
               <ShinyBadge icon={<Sparkles className="w-3.5 h-3.5 text-indigo-600" />}>
                 Workspace Intelligence Active
@@ -103,7 +106,7 @@ export const Dashboard: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="relative z-10 flex items-center space-x-3">
             <button
               onClick={handleRefresh}
               className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 shadow-sm transition active:scale-95"
@@ -200,14 +203,14 @@ export const Dashboard: React.FC = () => {
               </Link>
             </div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <GsapStagger selector=".review-row" stagger={0.05} className="divide-y divide-slate-100">
               {filteredReviews.map((rev) => {
                 const badge = statusBadge[rev.status];
 
                 return (
                   <div
                     key={rev.id}
-                    className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/80 p-3 rounded-xl transition-colors group"
+                    className="review-row py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/80 p-3 rounded-xl transition-colors group"
                   >
                     <div className="flex items-start space-x-3.5">
                       <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 flex-shrink-0 group-hover:scale-105 transition-transform">
@@ -259,7 +262,7 @@ export const Dashboard: React.FC = () => {
                   </div>
                 );
               })}
-            </div>
+            </GsapStagger>
           )}
         </div>
       </div>
