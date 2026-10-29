@@ -12,6 +12,7 @@ import { NewReview } from './pages/NewReview';
 import { ReviewDetail } from './pages/ReviewDetail';
 import { NotFound } from './pages/NotFound';
 import { Loader2 } from 'lucide-react';
+import { SmoothScroll } from './components/common/SmoothScroll';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -43,8 +44,9 @@ export const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BrowserRouter>
-          <div className="min-h-screen bg-[#FAF8FF] text-slate-900 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
-            <Navbar />
+          <SmoothScroll>
+            <div className="min-h-screen bg-[#FAF8FF] text-slate-900 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+              <Navbar />
             <main className="flex-1">
               <Routes>
                 {/* Dynamic Home Route: Landing when logged out, Dashboard when logged in */}
@@ -73,7 +75,8 @@ export const App: React.FC = () => {
               </Routes>
             </main>
           </div>
-        </BrowserRouter>
+        </SmoothScroll>
+      </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>
   );

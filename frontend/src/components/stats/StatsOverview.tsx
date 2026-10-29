@@ -1,6 +1,7 @@
 import React from 'react';
 import { StatsResponse, Category } from '../../types';
 import { Target, CheckCircle2, AlertOctagon, Layers } from 'lucide-react';
+import { SpotlightCard } from '../bits/SpotlightCard';
 
 interface StatsOverviewProps {
   stats?: StatsResponse;
@@ -20,7 +21,7 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 animate-pulse">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-32 bg-white rounded-2xl border border-slate-200/80 shadow-sm" />
+          <div key={i} className="h-32 bg-white/70 rounded-2xl border border-slate-200/80 shadow-sm" />
         ))}
       </div>
     );
@@ -32,22 +33,25 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
 
   return (
     <div className="space-y-6">
-      {/* 4 Top Metric Cards */}
+      {/* 4 Top Metric Cards with React Bits Spotlight Glow */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Precision Metric Card */}
-        <div className="glass-card glass-card-hover rounded-2xl p-6 relative overflow-hidden">
+        <SpotlightCard
+          spotlightColor="rgba(99, 102, 241, 0.18)"
+          className="p-6 relative overflow-hidden transition-all duration-300 hover:-translate-y-1"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
               AI Precision Rate
             </span>
-            <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+            <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
               <Target className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline space-x-2">
             <span
               id="stats-precision-val"
-              className="text-4xl font-extrabold tracking-tight text-slate-900"
+              className="text-4xl font-extrabold tracking-tight text-slate-900 bg-gradient-to-r from-indigo-900 to-indigo-600 bg-clip-text text-transparent"
             >
               {stats.acceptedCount + stats.falsePositiveCount > 0 ? `${precision}%` : 'N/A'}
             </span>
@@ -55,21 +59,24 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
               ({stats.acceptedCount} / {stats.acceptedCount + stats.falsePositiveCount} verified)
             </span>
           </div>
-          <div className="mt-4 w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+          <div className="mt-4 w-full bg-slate-100/80 h-2 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
             <div
-              className="bg-gradient-to-r from-indigo-500 to-violet-600 h-full rounded-full transition-all duration-700"
+              className="bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 h-full rounded-full transition-all duration-1000 ease-out"
               style={{ width: `${precision}%` }}
             />
           </div>
-        </div>
+        </SpotlightCard>
 
         {/* Total Code Reviews */}
-        <div className="glass-card glass-card-hover rounded-2xl p-6 relative">
+        <SpotlightCard
+          spotlightColor="rgba(14, 165, 233, 0.18)"
+          className="p-6 relative transition-all duration-300 hover:-translate-y-1"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
               Total Reviews
             </span>
-            <div className="w-8 h-8 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600">
+            <div className="w-8 h-8 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600 shadow-sm">
               <Layers className="w-4 h-4" />
             </div>
           </div>
@@ -78,18 +85,22 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
               {stats.totalReviews}
             </span>
           </div>
-          <p className="mt-4 text-xs font-medium text-slate-500">
-            Processed via Claude 3.5 Sonnet
+          <p className="mt-4 text-xs font-medium text-slate-500 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            Live Gemini 3.1 & Claude Engine
           </p>
-        </div>
+        </SpotlightCard>
 
         {/* Total Findings Identified */}
-        <div className="glass-card glass-card-hover rounded-2xl p-6 relative">
+        <SpotlightCard
+          spotlightColor="rgba(245, 158, 11, 0.18)"
+          className="p-6 relative transition-all duration-300 hover:-translate-y-1"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
               Identified Findings
             </span>
-            <div className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600">
+            <div className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm">
               <AlertOctagon className="w-4 h-4" />
             </div>
           </div>
@@ -101,15 +112,18 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
           <p className="mt-4 text-xs font-medium text-slate-500">
             Security, bugs & performance risks
           </p>
-        </div>
+        </SpotlightCard>
 
         {/* Accepted Findings (True Positives) */}
-        <div className="glass-card glass-card-hover rounded-2xl p-6 relative">
+        <SpotlightCard
+          spotlightColor="rgba(16, 185, 129, 0.18)"
+          className="p-6 relative transition-all duration-300 hover:-translate-y-1"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
               Accepted Findings
             </span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
@@ -124,7 +138,7 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
           <p className="mt-4 text-xs font-medium text-slate-500">
             Confirmed by engineering team
           </p>
-        </div>
+        </SpotlightCard>
       </div>
 
       {/* Category Distribution Bar Card */}

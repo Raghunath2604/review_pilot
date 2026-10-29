@@ -13,6 +13,7 @@ import {
   AlertTriangle,
   Copy,
 } from 'lucide-react';
+import { SpotlightCard } from '../bits/SpotlightCard';
 
 interface FindingCardProps {
   finding: Finding;
@@ -66,10 +67,18 @@ export const FindingCard: React.FC<FindingCardProps> = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const spotlightColor =
+    finding.severity === 'HIGH'
+      ? 'rgba(239, 68, 68, 0.14)'
+      : finding.severity === 'MEDIUM'
+      ? 'rgba(245, 158, 11, 0.14)'
+      : 'rgba(99, 102, 241, 0.14)';
+
   return (
-    <div
+    <SpotlightCard
       data-testid={`finding-card-${finding.id}`}
-      className="glass-card rounded-2xl p-6 transition-all duration-200 hover:shadow-lg space-y-4"
+      spotlightColor={spotlightColor}
+      className="p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 space-y-4"
     >
       {/* Header: Location & Badges */}
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -190,6 +199,6 @@ export const FindingCard: React.FC<FindingCardProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </SpotlightCard>
   );
 };

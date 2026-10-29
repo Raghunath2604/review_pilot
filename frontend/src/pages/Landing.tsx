@@ -16,6 +16,10 @@ import {
   Copy,
   Terminal,
 } from 'lucide-react';
+import { SpotlightCard } from '../components/bits/SpotlightCard';
+import { DecryptedText } from '../components/bits/DecryptedText';
+import { ShinyBadge } from '../components/bits/ShinyBadge';
+import { MagnetButton } from '../components/bits/MagnetButton';
 
 interface SampleDiffPreset {
   id: string;
@@ -123,16 +127,20 @@ export const Landing: React.FC = () => {
       <section className="relative pt-12 pb-20 md:pt-20 md:pb-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto space-y-6">
-            {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 border border-indigo-200/80 shadow-sm text-xs font-semibold text-indigo-700 backdrop-blur-md">
-              <span className="flex h-2 w-2 rounded-full bg-indigo-600 animate-pulse" />
-              <span>Next-Gen Code Review Engine • Powered by Claude 3.5 Sonnet</span>
+            {/* Shiny Pill Badge from React Bits */}
+            <div className="flex justify-center">
+              <ShinyBadge icon={<Sparkles className="w-3.5 h-3.5 text-indigo-600" />}>
+                Next-Gen Code Review Platform • Live Gemini 3.1 & Claude Engine
+              </ShinyBadge>
             </div>
 
-            {/* Giant Headline */}
+            {/* Giant Headline with Cyberpunk Decrypted Reveal */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
               Automated Code Reviews that Feel Like a{' '}
-              <span className="gradient-text-accent">Principal Engineer</span> on Your Team.
+              <span className="gradient-text-accent inline-block font-extrabold">
+                <DecryptedText text="Principal Engineer" speed={35} maxIterations={12} />
+              </span>{' '}
+              on Your Team.
             </h1>
 
             {/* Subheader */}
@@ -141,22 +149,25 @@ export const Landing: React.FC = () => {
               race conditions, and unindexed queries with line-level fixes and an auditable precision feedback loop.
             </p>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons with React Bits Magnet Button */}
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                to="/register"
-                id="hero-get-started-btn"
-                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-3.5 rounded-full text-base font-semibold bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-lg shadow-indigo-600/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <span>Start Reviewing Free</span>
-                <ArrowRight className="w-4 h-4" />
+              <Link to="/register" id="hero-get-started-btn">
+                <MagnetButton
+                  padding={80}
+                  className="px-8 py-3.5 rounded-full text-base font-semibold bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-xl shadow-indigo-600/30 transition-all hover:shadow-indigo-600/50 flex items-center gap-2"
+                >
+                  <span>Start Reviewing Free</span>
+                  <ArrowRight className="w-4 h-4" />
+                </MagnetButton>
               </Link>
-              <a
-                href="#live-preview"
-                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-3.5 rounded-full text-base font-semibold bg-white/90 hover:bg-white text-slate-700 border border-slate-200 shadow-sm hover:border-slate-300 transition-all hover:scale-[1.02]"
-              >
-                <Sparkles className="w-4 h-4 text-indigo-600" />
-                <span>Live Preview</span>
+              <a href="#live-preview">
+                <MagnetButton
+                  padding={60}
+                  className="px-8 py-3.5 rounded-full text-base font-semibold bg-white/90 hover:bg-white text-slate-700 border border-slate-200/90 shadow-sm hover:border-slate-300 transition-all flex items-center gap-2"
+                >
+                  <Sparkles className="w-4 h-4 text-indigo-600" />
+                  <span>Live Preview</span>
+                </MagnetButton>
               </a>
             </div>
 
@@ -388,9 +399,12 @@ export const Landing: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Card 1 */}
-          <div className="glass-card glass-card-hover rounded-2xl p-7 relative">
-            <div className="w-12 h-12 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-red-600 mb-5">
+          {/* Card 1: Security */}
+          <SpotlightCard
+            spotlightColor="rgba(239, 68, 68, 0.16)"
+            className="p-7 relative transition-all duration-300 hover:-translate-y-1.5"
+          >
+            <div className="w-12 h-12 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-red-600 mb-5 shadow-sm">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-2">
@@ -400,15 +414,18 @@ export const Landing: React.FC = () => {
               Detects SQL injection, broken object-level authorization (IDOR), ReDoS, hardcoded secrets,
               and cross-site scripting vulnerabilities before they hit production branches.
             </p>
-            <div className="mt-5 pt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-indigo-600">
+            <div className="mt-5 pt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-red-600">
               <span>OWASP Top 10 Aligned</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </div>
-          </div>
+          </SpotlightCard>
 
-          {/* Card 2 */}
-          <div className="glass-card glass-card-hover rounded-2xl p-7 relative">
-            <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 mb-5">
+          {/* Card 2: Performance */}
+          <SpotlightCard
+            spotlightColor="rgba(245, 158, 11, 0.16)"
+            className="p-7 relative transition-all duration-300 hover:-translate-y-1.5"
+          >
+            <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 mb-5 shadow-sm">
               <Zap className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-2">
@@ -418,15 +435,18 @@ export const Landing: React.FC = () => {
               Flags O(N²) quadratic loops, unindexed relational database queries, unhandled Promise memory leaks,
               and connection pool exhaustions before latency regressions occur.
             </p>
-            <div className="mt-5 pt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-indigo-600">
+            <div className="mt-5 pt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-amber-600">
               <span>Sub-millisecond Focus</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </div>
-          </div>
+          </SpotlightCard>
 
-          {/* Card 3 */}
-          <div className="glass-card glass-card-hover rounded-2xl p-7 relative">
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 mb-5">
+          {/* Card 3: Testing */}
+          <SpotlightCard
+            spotlightColor="rgba(16, 185, 129, 0.16)"
+            className="p-7 relative transition-all duration-300 hover:-translate-y-1.5"
+          >
+            <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 mb-5 shadow-sm">
               <Layers className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-2">
@@ -436,11 +456,11 @@ export const Landing: React.FC = () => {
               Identifies uncovered branch edge-cases, null pointer conditions, and generates ready-to-paste
               unit test specifications in Vitest or Jest.
             </p>
-            <div className="mt-5 pt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-indigo-600">
+            <div className="mt-5 pt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-emerald-600">
               <span>High-Branch Coverage</span>
               <ArrowRight className="w-3.5 h-3.5 ml-1" />
             </div>
-          </div>
+          </SpotlightCard>
         </div>
       </section>
 

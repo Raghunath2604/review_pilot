@@ -25,13 +25,17 @@ export const Navbar: React.FC = () => {
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center space-x-1.5">
+              <div className="flex items-center space-x-2">
                 <span className="font-bold text-lg tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors">
                   ReviewPilot
                 </span>
                 <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
                   AI
                 </span>
+                <div className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50/90 border border-emerald-200/70 text-[10px] font-semibold text-emerald-700">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Gemini 3.1 Live</span>
+                </div>
               </div>
             </div>
           </Link>
