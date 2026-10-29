@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { StatsOverview } from '../components/stats/StatsOverview';
@@ -46,8 +48,30 @@ const statusBadge: Record<
 };
 
 export const Dashboard: React.FC = () => {
+  const dashboardRef = useRef<HTMLDivElement>(null);
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+
+  useGSAP(
+    () => {
+      // Top header banner entrance
+      gsap.from('.dash-header-banner', {
+        y: -25,
+        opacity: 0,
+        duration: 0.7,
+        ease: 'power3.out',
+      });
+      // Review history card entrance
+      gsap.from('.dash-history-card', {
+        y: 30,
+        opacity: 0,
+        duration: 0.8,
+        delay: 0.15,
+        ease: 'power3.out',
+      });
+    },
+    { scope: dashboardRef }
+  );
 
   const {
     data: reviewsData,
@@ -87,10 +111,10 @@ export const Dashboard: React.FC = () => {
   });
 
   return (
-    <div className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 pb-16">
+    <div ref={dashboardRef} className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
         {/* Top Banner & Action */}
-        <div className="relative overflow-hidden flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div className="dash-header-banner relative overflow-hidden flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <ParticlesBackground particleCount={25} className="opacity-35" />
           <div className="relative z-10">
             <div className="mb-2">
@@ -134,7 +158,7 @@ export const Dashboard: React.FC = () => {
         <StatsOverview stats={statsData} isLoading={isStatsLoading} />
 
         {/* Review History Section */}
-        <div className="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+        <div className="dash-history-card glass-card rounded-2xl p-6 sm:p-8 space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h2 className="text-lg font-bold text-slate-900">

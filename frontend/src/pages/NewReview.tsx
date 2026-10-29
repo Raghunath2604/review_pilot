@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { api } from '../services/api';
 import {
   FileDiff,
@@ -46,12 +48,25 @@ const SAMPLE_REDOS = `diff --git a/src/utils/parser.ts b/src/utils/parser.ts
 const MAX_DIFF_BYTES = 200 * 1024; // 200 KB
 
 export const NewReview: React.FC = () => {
+  const pageRef = useRef<HTMLDivElement>(null);
   const [sourceType, setSourceType] = useState<'DIFF' | 'GITHUB_PR'>('DIFF');
   const [diffText, setDiffText] = useState('');
   const [prUrl, setPrUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisStep, setAnalysisStep] = useState(1);
+
+  useGSAP(
+    () => {
+      gsap.from('.new-review-box', {
+        y: 28,
+        opacity: 0,
+        duration: 0.75,
+        ease: 'power3.out',
+      });
+    },
+    { scope: pageRef }
+  );
 
   // Optional custom AI key configuration
   const [showKeyConfig, setShowKeyConfig] = useState(false);
@@ -130,7 +145,7 @@ export const NewReview: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 pb-16">
+    <div ref={pageRef} className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
         {/* Back Link */}
         <Link
@@ -158,7 +173,7 @@ export const NewReview: React.FC = () => {
         </div>
 
         {/* Main Review Form Card */}
-        <div className="glass-card rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm">
+        <div className="new-review-box glass-card rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm">
           {error && (
             <div
               id="new-review-error-alert"

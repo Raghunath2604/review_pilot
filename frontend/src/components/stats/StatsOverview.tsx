@@ -3,6 +3,7 @@ import { StatsResponse, Category } from '../../types';
 import { Target, CheckCircle2, AlertOctagon, Layers } from 'lucide-react';
 import { SpotlightCard } from '../bits/SpotlightCard';
 import { GsapStagger } from '../animations/GsapStagger';
+import { GsapCounter } from '../animations/GsapCounter';
 
 interface StatsOverviewProps {
   stats?: StatsResponse;
@@ -50,12 +51,21 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
             </div>
           </div>
           <div className="mt-3 flex items-baseline space-x-2">
-            <span
-              id="stats-precision-val"
-              className="text-4xl font-extrabold tracking-tight text-slate-900 bg-gradient-to-r from-indigo-900 to-indigo-600 bg-clip-text text-transparent"
-            >
-              {stats.acceptedCount + stats.falsePositiveCount > 0 ? `${precision}%` : 'N/A'}
-            </span>
+            {stats.acceptedCount + stats.falsePositiveCount > 0 ? (
+              <GsapCounter
+                id="stats-precision-val"
+                value={precision}
+                suffix="%"
+                className="text-4xl font-extrabold tracking-tight text-slate-900 bg-gradient-to-r from-indigo-900 to-indigo-600 bg-clip-text text-transparent"
+              />
+            ) : (
+              <span
+                id="stats-precision-val"
+                className="text-4xl font-extrabold tracking-tight text-slate-900 bg-gradient-to-r from-indigo-900 to-indigo-600 bg-clip-text text-transparent"
+              >
+                N/A
+              </span>
+            )}
             <span className="text-xs text-slate-500 font-medium">
               ({stats.acceptedCount} / {stats.acceptedCount + stats.falsePositiveCount} verified)
             </span>
@@ -82,9 +92,11 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
             </div>
           </div>
           <div className="mt-3">
-            <span className="text-4xl font-extrabold tracking-tight text-slate-900">
-              {stats.totalReviews}
-            </span>
+            <GsapCounter
+              value={stats.totalReviews}
+              duration={1.2}
+              className="text-4xl font-extrabold tracking-tight text-slate-900"
+            />
           </div>
           <p className="mt-4 text-xs font-medium text-slate-500 flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -106,9 +118,11 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
             </div>
           </div>
           <div className="mt-3">
-            <span className="text-4xl font-extrabold tracking-tight text-slate-900">
-              {stats.totalFindings}
-            </span>
+            <GsapCounter
+              value={stats.totalFindings}
+              duration={1.3}
+              className="text-4xl font-extrabold tracking-tight text-slate-900"
+            />
           </div>
           <p className="mt-4 text-xs font-medium text-slate-500">
             Security, bugs & performance risks
@@ -129,9 +143,11 @@ export const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, isLoading }
             </div>
           </div>
           <div className="mt-3 flex items-baseline space-x-2">
-            <span className="text-4xl font-extrabold tracking-tight text-emerald-600">
-              {stats.acceptedCount}
-            </span>
+            <GsapCounter
+              value={stats.acceptedCount}
+              duration={1.4}
+              className="text-4xl font-extrabold tracking-tight text-emerald-600"
+            />
             <span className="text-xs text-slate-500">
               ({stats.falsePositiveCount} false pos.)
             </span>

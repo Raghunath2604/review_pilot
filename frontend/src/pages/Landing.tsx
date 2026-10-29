@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import {
   Sparkles,
   ArrowRight,
@@ -23,6 +26,9 @@ import { MagnetButton } from '../components/bits/MagnetButton';
 import { ParticlesBackground } from '../components/bits/ParticlesBackground';
 import { TiltedCard } from '../components/bits/TiltedCard';
 import { GsapStagger } from '../components/animations/GsapStagger';
+import { GsapCounter } from '../components/animations/GsapCounter';
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 interface SampleDiffPreset {
   id: string;
@@ -115,8 +121,60 @@ const SAMPLE_PRESETS: SampleDiffPreset[] = [
 ];
 
 export const Landing: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [activePreset, setActivePreset] = useState<SampleDiffPreset>(SAMPLE_PRESETS[0]);
   const [copiedCode, setCopiedCode] = useState(false);
+
+  useGSAP(
+    () => {
+      // 1. Hero entrance master timeline
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      tl.from('.hero-badge-wrap', { y: -25, opacity: 0, duration: 0.7 })
+        .from('.hero-main-title', { y: 35, opacity: 0, duration: 0.8 }, '-=0.4')
+        .from('.hero-main-sub', { y: 25, opacity: 0, duration: 0.7 }, '-=0.5')
+        .from('.hero-cta-btns', { scale: 0.92, y: 20, opacity: 0, duration: 0.6, ease: 'back.out(1.6)' }, '-=0.3')
+        .from('.hero-micro-guarantee', { opacity: 0, duration: 0.5 }, '-=0.2')
+        .from('.hero-floating-stats', { y: 40, opacity: 0, duration: 0.8 }, '-=0.3');
+
+      // 2. ScrollTrigger for Live Preview section
+      gsap.from('.live-preview-content', {
+        scrollTrigger: {
+          trigger: '#live-preview',
+          start: 'top 85%',
+        },
+        y: 45,
+        opacity: 0,
+        duration: 0.9,
+        ease: 'power3.out',
+      });
+
+      // 3. ScrollTrigger for Testimonials
+      gsap.from('.testimonial-card', {
+        scrollTrigger: {
+          trigger: '#testimonials',
+          start: 'top 85%',
+        },
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'power3.out',
+      });
+
+      // 4. ScrollTrigger for Architecture
+      gsap.from('.arch-card', {
+        scrollTrigger: {
+          trigger: '#architecture',
+          start: 'top 85%',
+        },
+        y: 40,
+        opacity: 0,
+        duration: 0.85,
+        ease: 'power3.out',
+      });
+    },
+    { scope: containerRef }
+  );
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -125,21 +183,21 @@ export const Landing: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 overflow-hidden">
+    <div ref={containerRef} className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 overflow-hidden">
       {/* ---------------- 1. HERO SECTION ---------------- */}
       <section className="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden">
         <ParticlesBackground particleCount={45} className="opacity-45" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto space-y-6">
             {/* Shiny Pill Badge from React Bits */}
-            <div className="flex justify-center">
+            <div className="hero-badge-wrap flex justify-center">
               <ShinyBadge icon={<Sparkles className="w-3.5 h-3.5 text-indigo-600" />}>
                 Next-Gen Code Review Platform • Live Gemini 3.1 & Claude Engine
               </ShinyBadge>
             </div>
 
             {/* Giant Headline with Cyberpunk Decrypted Reveal */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
+            <h1 className="hero-main-title text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
               Automated Code Reviews that Feel Like a{' '}
               <span className="gradient-text-accent inline-block font-extrabold">
                 <DecryptedText text="Principal Engineer" speed={35} maxIterations={12} />
@@ -148,13 +206,13 @@ export const Landing: React.FC = () => {
             </h1>
 
             {/* Subheader */}
-            <p className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
+            <p className="hero-main-sub text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
               Paste a unified diff or GitHub pull request URL. ReviewPilot catches subtle security risks,
               race conditions, and unindexed queries with line-level fixes and an auditable precision feedback loop.
             </p>
 
             {/* CTA Buttons with React Bits Magnet Button */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="hero-cta-btns pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/register" id="hero-get-started-btn">
                 <MagnetButton
                   padding={80}
@@ -176,7 +234,7 @@ export const Landing: React.FC = () => {
             </div>
 
             {/* Micro-guarantee */}
-            <div className="pt-2 flex items-center justify-center space-x-6 text-xs text-slate-500">
+            <div className="hero-micro-guarantee pt-2 flex items-center justify-center space-x-6 text-xs text-slate-500">
               <span className="flex items-center gap-1.5">
                 <Check className="w-3.5 h-3.5 text-emerald-600 font-bold" />
                 No credit card required
@@ -193,11 +251,11 @@ export const Landing: React.FC = () => {
           </div>
 
           {/* ---------------- 2. FLOATING GLASS STATS BAR (Reference Image Match) ---------------- */}
-          <div className="mt-14 max-w-5xl mx-auto">
+          <div className="hero-floating-stats mt-14 max-w-5xl mx-auto">
             <div className="glass-pill rounded-2xl p-6 sm:p-8 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/60">
               <div className="text-center sm:text-left sm:pl-2">
                 <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                  99.4<span className="text-indigo-600">%</span>
+                  <GsapCounter value={99} suffix="%" duration={1.6} />
                 </div>
                 <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mt-1">
                   AI Precision Rate
@@ -227,7 +285,7 @@ export const Landing: React.FC = () => {
 
               <div className="text-center sm:text-left sm:pl-6 pt-4 sm:pt-0">
                 <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-                  100<span className="text-indigo-600">%</span>
+                  <GsapCounter value={100} suffix="%" duration={1.8} />
                 </div>
                 <div className="text-xs font-semibold uppercase tracking-wider text-slate-500 mt-1">
                   Zod Validated
@@ -241,7 +299,7 @@ export const Landing: React.FC = () => {
 
       {/* ---------------- 3. LIVE CODE ANALYSIS PREVIEW ---------------- */}
       <section id="live-preview" className="py-16 bg-white/70 border-y border-slate-200/80">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="live-preview-content max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <span className="text-xs font-bold uppercase tracking-widest text-indigo-600">
               Live Code Analysis Preview
@@ -486,7 +544,7 @@ export const Landing: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="glass-card rounded-2xl p-6 space-y-4">
+            <div className="testimonial-card glass-card rounded-2xl p-6 space-y-4">
               <div className="flex items-center space-x-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-amber-400" />
@@ -507,7 +565,7 @@ export const Landing: React.FC = () => {
               </div>
             </div>
 
-            <div className="glass-card rounded-2xl p-6 space-y-4">
+            <div className="testimonial-card glass-card rounded-2xl p-6 space-y-4">
               <div className="flex items-center space-x-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-amber-400" />
@@ -528,7 +586,7 @@ export const Landing: React.FC = () => {
               </div>
             </div>
 
-            <div className="glass-card rounded-2xl p-6 space-y-4">
+            <div className="testimonial-card glass-card rounded-2xl p-6 space-y-4">
               <div className="flex items-center space-x-1 text-amber-400">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-amber-400" />
@@ -554,7 +612,7 @@ export const Landing: React.FC = () => {
 
       {/* ---------------- 6. ARCHITECTURE & SECURITY SECTION ---------------- */}
       <section id="architecture" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="glass-card rounded-3xl p-8 sm:p-12 border border-indigo-100 shadow-xl relative overflow-hidden">
+        <div className="arch-card glass-card rounded-3xl p-8 sm:p-12 border border-indigo-100 shadow-xl relative overflow-hidden">
           <div className="max-w-3xl">
             <span className="text-xs font-bold uppercase tracking-widest text-indigo-600">
               Enterprise Security Architecture

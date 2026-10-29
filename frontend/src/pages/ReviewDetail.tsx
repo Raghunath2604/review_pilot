@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../services/api';
 import { FindingCard } from '../components/findings/FindingCard';
@@ -20,11 +22,31 @@ import {
 } from 'lucide-react';
 
 export const ReviewDetail: React.FC = () => {
+  const detailRef = useRef<HTMLDivElement>(null);
   const { id } = useParams<{ id: string }>();
   const queryClient = useQueryClient();
 
   const [selectedSeverity, setSelectedSeverity] = useState<Severity | 'ALL'>('ALL');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'ALL'>('ALL');
+
+  useGSAP(
+    () => {
+      gsap.from('.detail-summary-card', {
+        y: -25,
+        opacity: 0,
+        duration: 0.75,
+        ease: 'power3.out',
+      });
+      gsap.from('.detail-filter-bar', {
+        y: 20,
+        opacity: 0,
+        duration: 0.6,
+        delay: 0.1,
+        ease: 'power3.out',
+      });
+    },
+    { scope: detailRef }
+  );
 
   const {
     data,
@@ -173,7 +195,7 @@ export const ReviewDetail: React.FC = () => {
   };
 
   return (
-    <div className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 pb-16 print:bg-white print:p-0">
+    <div ref={detailRef} className="bg-[#FAF8FF] bg-mesh-radial min-h-screen text-slate-900 pb-16 print:bg-white print:p-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
         {/* Back Link (Hidden on Print) */}
         <div className="flex items-center justify-between print:hidden">
@@ -209,7 +231,7 @@ export const ReviewDetail: React.FC = () => {
         </div>
 
         {/* Header Summary Card */}
-        <div className="glass-card rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm print:border-none print:shadow-none print:p-0">
+        <div className="detail-summary-card glass-card rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm print:border-none print:shadow-none print:p-0">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-start space-x-4">
               <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 flex-shrink-0 print:border-slate-300">
@@ -291,7 +313,7 @@ export const ReviewDetail: React.FC = () => {
         </div>
 
         {/* Filter Controls Bar (Hidden on Print) */}
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-slate-200/80 print:hidden">
+        <div className="detail-filter-bar flex flex-wrap items-center justify-between gap-3 bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-slate-200/80 print:hidden">
           <div className="flex items-center space-x-2 text-xs font-bold text-slate-700">
             <Filter className="w-4 h-4 text-indigo-600" />
             <span>Filter Findings:</span>
