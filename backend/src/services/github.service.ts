@@ -45,6 +45,7 @@ export class GitHubService {
           Accept: 'application/vnd.github.v3.diff',
           'User-Agent': 'ReviewPilot-CodeReviewEngine',
         },
+        redirect: 'follow',
       });
     } catch (err) {
       throw new AppError(`Failed to reach GitHub API: ${(err as Error).message}`, 502);
